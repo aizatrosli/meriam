@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  UNITY_VERSION: 2022.3.56f1
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Build release binaries for all target platforms
+  # ---------------------------------------------------------------------------
+  release-build:
+    name: Release Build (${{ matrix.targetPlatform }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneLinux64
+          - StandaloneWindows64
+          - WebGL
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Release-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Release-${{ matrix.targetPlatform }}-
+            Library-
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          buildName: MeriamRaya
+          versioning: Tag
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Release-${{ matrix.targetPlatform }}
+          path: builds/${{ matrix.targetPlatform }}
+
+  # ---------------------------------------------------------------------------
+  # Create a GitHub Release and attach zipped builds
+  # ---------------------------------------------------------------------------
+  github-release:
+    name: Publish GitHub Release
+    needs: release-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Zip platform builds
+        run: |
+          cd artifacts
+          for dir in Release-*/; do
+            zip -r "${dir%/}.zip" "$dir"
+          done
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/Release-*.zip
+          generate_release_notes: true
+          body: |
+            ## Meriam Raya - Selamat Raya!
+
+            Two-player co-operative meriam buluh game for Ramadan / Raya night.
+            - **Anak Sulung (Player 1)**: aim the cannon
+            - **Anak Bongsu (Player 2)**: load and fire
+
+            ### Downloads
+            | Platform | File |
+            |---|---|
+            | Windows | Release-StandaloneWindows64.zip |
+            | Linux | Release-StandaloneLinux64.zip |
+            | WebGL (Browser) | Release-WebGL.zip |
