@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b_game"]
+[gd_scene load_steps=12 format=3 uid="uid://b_game"]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scenes/game/round_manager.gd" id="2_rm"]
@@ -13,8 +13,12 @@
 [ext_resource type="Script" path="res://scenes/network/network_game_manager.gd" id="11_net"]
 [ext_resource type="Resource" path="res://resources/game_config.tres" id="12_cfg"]
 
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(1280, 20)
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
+config = ExtResource("12_cfg")
 
 [node name="Background" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -27,13 +31,14 @@ collision_layer = 1
 position = Vector2(640, 680)
 
 [node name="GroundShape" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("1")
 
 [node name="Cannon" parent="."]
 instance = ExtResource("3_cannon")
 position = Vector2(100, 580)
 
 [node name="TargetZoneCenter" type="Marker2D" parent="."]
-position = Vector2(700, 540)
+position = Vector2(700, 520)
 
 [node name="TargetSpawner" type="Node2D" parent="."]
 script = ExtResource("7_ts")

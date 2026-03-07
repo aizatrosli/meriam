@@ -1,5 +1,5 @@
 ## Integration tests for the full co-op fire sequence.
-## Player 1 aims → Player 2 loads → Player 2 fires → projectile spawns.
+## Player 1 aims → Player 2 loads → Player 2 fires → signal emitted.
 ## Mirrors Unity's CoopFireSequenceTests (PlayMode).
 extends GutTest
 
@@ -22,15 +22,15 @@ func before_each() -> void:
 	config.projectile_damage = 1
 
 	aimer = CannonAimer.new()
-	aimer.config = config
+	aimer.set_config(config)
 	add_child(aimer)
 
 	loader = CannonLoader.new()
-	loader.config = config
+	loader.set_config(config)
 	add_child(loader)
 
 	firer = CannonFirer.new()
-	firer.config = config
+	firer.set_config(config)
 	firer.aimer = aimer
 	firer.loader = loader
 	add_child(firer)
@@ -109,13 +109,10 @@ func test_p2_fire_press_calls_fire() -> void:
 	assert_signal_emitted(firer, "fired")
 
 func test_aim_then_load_then_fire_full_sequence() -> void:
-	# Anak Sulung aims
 	p1.on_aim_input(45.0)
 	assert_almost_eq(aimer.current_angle, 45.0, 0.01)
-	# Anak Bongsu loads
 	loader.force_load()
 	assert_true(loader.is_loaded)
-	# Anak Bongsu fires
 	watch_signals(firer)
 	p2.on_fire_pressed()
 	assert_signal_emitted(firer, "fired")

@@ -5,8 +5,11 @@
 class_name CannonAimer
 extends Node2D
 
-@export var config: GameConfig
-@export var barrel_pivot: Node2D
+## Set by Cannon._ready() – the Node2D whose rotation_degrees drives the barrel.
+var barrel_pivot: Node2D = null
+
+## Set by Cannon._ready() via cannon.gd reading from GameConfig resource.
+var config: GameConfig = null
 
 var current_angle: float = 0.0
 var is_locked: bool = false
@@ -19,6 +22,9 @@ var max_aim_angle: float:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
+func set_config(cfg: GameConfig) -> void:
+	config = cfg
 
 func adjust_aim(delta_angle: float) -> void:
 	if is_locked:

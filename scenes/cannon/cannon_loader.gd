@@ -5,7 +5,8 @@
 class_name CannonLoader
 extends Node
 
-@export var config: GameConfig
+## Injected by Cannon._ready() or game.gd
+var config: GameConfig = null
 
 var is_loaded: bool = false
 var load_progress: float = 0.0  # 0.0 – 1.0
@@ -35,6 +36,9 @@ func _process(delta: float) -> void:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
+func set_config(cfg: GameConfig) -> void:
+	config = cfg
 
 func begin_loading() -> void:
 	if is_loaded:

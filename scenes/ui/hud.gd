@@ -1,16 +1,18 @@
 ## HUD – heads-up display for Meriam Raya.
 ## Shows: Markah (score), Nyawa (lives), Pusingan (round), load progress.
 ## Bilingual Malay / English text.
-## Replaces Unity's HUDController MonoBehaviour (TextMeshPro + Image).
+## Replaces Unity's HUDController MonoBehaviour.
 class_name HUD
 extends CanvasLayer
 
-@export var markah_label: Label      # "Markah: 0"
-@export var nyawa_label: Label       # "Nyawa: 3"
-@export var pusingan_label: Label    # "Pusingan 1 / Round 1"
-@export var load_progress_bar: ProgressBar
-@export var load_status_label: Label # "Isi..." / "Sedia!"
-@export var cannon_loader: CannonLoader
+## Injected by game.gd after scene is ready
+var cannon_loader: CannonLoader = null
+
+@onready var markah_label: Label = $Control/TopBar/MarkahLabel
+@onready var pusingan_label: Label = $Control/TopBar/PusinganLabel
+@onready var nyawa_label: Label = $Control/TopBar/NyawaLabel
+@onready var load_status_label: Label = $Control/BottomBar/LoadStatusLabel
+@onready var load_progress_bar: ProgressBar = $Control/BottomBar/LoadProgressBar
 
 # ---------------------------------------------------------------------------
 # Lifecycle
@@ -20,12 +22,15 @@ func _ready() -> void:
 	GameManager.target_hit.connect(_on_target_hit)
 	GameManager.life_lost.connect(_on_life_lost)
 	_refresh_score(ScoreManager.get_current_score())
-	_refresh_lives(GameManager.lives_manager.lives_remaining if GameManager.lives_manager else 3)
+	var lm := GameManager.lives_manager
+	_refresh_lives(lm.lives_remaining if lm else 3)
 
 func _process(_delta: float) -> void:
-	if cannon_loader and load_progress_bar:
+	if not cannon_loader:
+		return
+	if load_progress_bar:
 		load_progress_bar.value = cannon_loader.load_progress * 100.0
-	if cannon_loader and load_status_label:
+	if load_status_label:
 		load_status_label.text = "Sedia!" if cannon_loader.is_loaded else "Isi..."
 
 # ---------------------------------------------------------------------------

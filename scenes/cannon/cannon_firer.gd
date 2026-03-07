@@ -6,12 +6,13 @@
 class_name CannonFirer
 extends Node
 
-@export var config: GameConfig
-@export var aimer: CannonAimer
-@export var loader: CannonLoader
-@export var muzzle_point: Marker2D
-@export var audio_player: AudioStreamPlayer2D
-@export var fire_sound: AudioStream
+## Injected by Cannon._ready()
+var config: GameConfig = null
+var aimer: CannonAimer = null
+var loader: CannonLoader = null
+var muzzle_point: Marker2D = null
+var audio_player: AudioStreamPlayer2D = null
+var fire_sound: AudioStream = null
 
 var can_fire: bool:
 	get: return loader != null and loader.is_loaded and not aimer.is_locked
@@ -28,18 +29,19 @@ signal cooldown_complete()
 # Public API
 # ---------------------------------------------------------------------------
 
+func set_config(cfg: GameConfig) -> void:
+	config = cfg
+
 func fire() -> void:
 	if not can_fire:
 		return
 	aimer.is_locked = true
 
-	# Spawn bola meriam (cannonball)
+	# Spawn bola meriam (cannonball) at the muzzle
 	if config and config.cannon_ball_scene and muzzle_point:
-		var projectile_node = config.cannon_ball_scene.instantiate()
+		var projectile_node := config.cannon_ball_scene.instantiate()
 		muzzle_point.get_tree().get_root().add_child(projectile_node)
 		projectile_node.global_position = muzzle_point.global_position
-		projectile_node.rotation_degrees = aimer.current_angle
-
 		if projectile_node.has_method("launch"):
 			projectile_node.launch(
 				aimer.current_angle,

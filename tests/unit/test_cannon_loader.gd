@@ -1,6 +1,5 @@
 ## Unit tests for CannonLoader.
 ## Mirrors Unity's CannonLoaderTests (EditMode NUnit with FakeTimeProvider).
-## Uses GUT's await / yield_for to simulate frame passage.
 extends GutTest
 
 var loader: CannonLoader
@@ -10,7 +9,7 @@ func before_each() -> void:
 	config = GameConfig.new()
 	config.cannon_load_duration = 2.0
 	loader = CannonLoader.new()
-	loader.config = config
+	loader.set_config(config)
 	add_child(loader)
 
 func after_each() -> void:
@@ -52,7 +51,6 @@ func test_force_load_emits_load_complete() -> void:
 func test_begin_loading_when_already_loaded_is_no_op() -> void:
 	loader.force_load()
 	loader.begin_loading()
-	# Should still be loaded and at 1.0
 	assert_true(loader.is_loaded)
 
 func test_cancel_loading_clears_loaded_state() -> void:

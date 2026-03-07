@@ -11,7 +11,7 @@ func before_each() -> void:
 	config.max_aim_angle = 75.0
 	config.cannon_aim_speed = 60.0
 	aimer = CannonAimer.new()
-	aimer.config = config
+	aimer.set_config(config)
 	add_child(aimer)
 
 func after_each() -> void:

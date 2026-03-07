@@ -1,13 +1,14 @@
 ## CannonReloadIndicator – visual feedback for Player 2's loading progress.
 ## Displayed as a progress bar above the meriam in the kampung scene.
-## Replaces Unity's CannonReloadIndicator MonoBehaviour.
+## Injected by Cannon._ready(). Replaces Unity's CannonReloadIndicator.
 class_name CannonReloadIndicator
 extends Node
 
-@export var loader: CannonLoader
-@export var fill_bar: ProgressBar
-@export var loaded_icon: Control
-@export var load_status_label: Label  # Shows "Isi..." / "Sedia!"
+## Injected by Cannon._ready()
+var loader: CannonLoader = null
+var fill_bar: ProgressBar = null
+var loaded_icon: Control = null
+var load_status_label: Label = null
 
 # ---------------------------------------------------------------------------
 # Process

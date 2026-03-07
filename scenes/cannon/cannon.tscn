@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://b_cannon"]
+[gd_scene load_steps=6 format=3 uid="uid://b_cannon"]
 
 [ext_resource type="Script" path="res://scenes/cannon/cannon.gd" id="1_cannon"]
 [ext_resource type="Script" path="res://scenes/cannon/cannon_aimer.gd" id="2_aimer"]
 [ext_resource type="Script" path="res://scenes/cannon/cannon_loader.gd" id="3_loader"]
 [ext_resource type="Script" path="res://scenes/cannon/cannon_firer.gd" id="4_firer"]
 [ext_resource type="Script" path="res://scenes/cannon/cannon_reload_indicator.gd" id="5_indicator"]
-[ext_resource type="PackedScene" path="res://scenes/cannon/cannon_projectile.tscn" id="6_ball"]
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(80, 20)

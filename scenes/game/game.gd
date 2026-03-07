@@ -1,27 +1,56 @@
 ## Game – root script for the main gameplay scene.
-## Wires together GameManager, RoundManager, cannon, players, and UI.
+## Wires all sub-systems together at runtime after the scene tree is ready.
 class_name Game
 extends Node2D
 
 @export var config: GameConfig
-@export var round_manager: RoundManager
-@export var cannon: Cannon
-@export var hud: HUD
-@export var round_announcement: RoundAnnouncementUI
-@export var game_over_ui: GameOverUI
-@export var network_manager: NetworkGameManager
+
+@onready var cannon: Cannon = $Cannon
+@onready var target_spawner: TargetSpawner = $TargetSpawner
+@onready var round_manager: RoundManager = $RoundManager
+@onready var p1: Player1Controller = $Player1Controller
+@onready var p2: Player2Controller = $Player2Controller
+@onready var player_input_router: PlayerInputRouter = $PlayerInputRouter
+@onready var network_manager: NetworkGameManager = $NetworkGameManager
+@onready var hud: HUD = $HUD
+@onready var round_announcement: RoundAnnouncementUI = $RoundAnnouncementUI
 
 # ---------------------------------------------------------------------------
 # Lifecycle
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
-	# Wire round manager to HUD
-	if round_manager and hud:
-		round_manager.round_started.connect(hud.update_round)
-		round_manager.round_started.connect(_on_round_started)
+	assert(config != null, "Game: config must be assigned in Inspector")
 
-	# Wire GameManager signals
+	# Push config down into cannon sub-components
+	cannon.set_config(config)
+
+	# Wire player controllers to cannon
+	p1.aimer = cannon.aimer
+	p2.loader = cannon.loader
+	p2.firer = cannon.firer
+
+	# Wire input router
+	player_input_router.player1 = p1
+	player_input_router.player2 = p2
+	player_input_router.config = config
+
+	# Wire network manager
+	network_manager.cannon = cannon
+	network_manager.player_input_router = player_input_router
+
+	# Wire target spawner to round manager
+	round_manager.config = config
+	round_manager.target_spawner = target_spawner
+
+	# Wire HUD reload indicator
+	hud.cannon_loader = cannon.loader
+
+	# Wire round manager events
+	round_manager.round_started.connect(hud.update_round)
+	round_manager.round_started.connect(_on_round_started)
+
+	# Register round manager with GameManager
 	GameManager.round_manager = round_manager
 
 	# Start the game
@@ -30,16 +59,20 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		if GameManager.state_machine.current_state == GameState.State.PLAYING:
-			GameManager.pause_game()
-		elif GameManager.state_machine.current_state == GameState.State.PAUSED:
-			GameManager.resume_game()
+		match GameManager.state_machine.current_state:
+			GameState.State.PLAYING:
+				GameManager.pause_game()
+			GameState.State.PAUSED:
+				GameManager.resume_game()
 
 # ---------------------------------------------------------------------------
 # Private
 # ---------------------------------------------------------------------------
 
 func _on_round_started(round_number: int) -> void:
-	if round_announcement and config and config.rounds.size() >= round_number:
+	if config and config.rounds.size() >= round_number:
 		var round_cfg: RoundConfig = config.rounds[round_number - 1]
-		round_announcement.show_round_announcement(round_number, round_cfg.round_announcement_malay)
+		round_announcement.show_round_announcement(
+			round_number,
+			round_cfg.round_announcement_malay
+		)
