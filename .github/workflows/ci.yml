@@ -11,7 +11,7 @@ on:
 
 env:
   GODOT_VERSION: "4.3"
-  GUT_VERSION: "v9.3.0"
+  GUT_VERSION: "9.3.0"
 
 jobs:
 
@@ -31,15 +31,18 @@ jobs:
         with:
           lfs: true
 
-      - name: Install GUT (${{ env.GUT_VERSION }})
+      - name: Install GUT (v${{ env.GUT_VERSION }})
         run: |
           mkdir -p addons
           wget -q \
-            "https://github.com/bitwes/Gut/releases/download/${{ env.GUT_VERSION }}/gut_${{ env.GUT_VERSION }}.zip" \
+            "https://github.com/bitwes/Gut/releases/download/v${{ env.GUT_VERSION }}/gut_${{ env.GUT_VERSION }}.zip" \
             -O /tmp/gut.zip
           unzip -q /tmp/gut.zip -d addons/
           echo "GUT installed:"
           ls addons/gut/
+
+      - name: Import project (registers class names)
+        run: godot --headless --path . --import || true
 
       - name: Create test-results directory
         run: mkdir -p test-results

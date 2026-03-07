@@ -18,9 +18,9 @@ func get_current_score() -> int:
 	return current_score
 
 func get_high_score() -> int:
-	return ProjectSettings.get_setting("application/run/high_score", 0) \
-		if not _config_file.has_section_key("scores", HIGH_SCORE_KEY) \
-		else _config_file.get_value("scores", HIGH_SCORE_KEY, 0)
+	if not _config_file.has_section_key("scores", HIGH_SCORE_KEY):
+		return 0
+	return _config_file.get_value("scores", HIGH_SCORE_KEY, 0)
 
 func add_score(points: int) -> void:
 	if points <= 0:

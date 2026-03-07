@@ -4,7 +4,7 @@
     "log_level": 1,
     "suffix": "test_",
     "include_subdirs": true,
-    "junit_xml_file": "test_results/results.xml",
+    "junit_xml_file": "test-results/results.xml",
     "gut_on_top": false,
     "compact_mode": false,
     "ignore_pause": true
