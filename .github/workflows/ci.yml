@@ -42,20 +42,23 @@ jobs:
           ls addons/gut/
 
       - name: Import project (registers class names)
-        run: godot --headless --path . --import || true
+        run: godot --headless --path . --import --quit || true
 
       - name: Create test-results directory
         run: mkdir -p test-results
 
       - name: Run GUT tests (headless)
+        env:
+          GODOT_DISABLE_LEAK_CHECKS: "1"
         run: |
           godot \
             --headless \
+            --display-driver headless \
+            --audio-driver Dummy \
             --path . \
             -s addons/gut/gut_cmdln.gd \
             -gconfig=res://tests/.gutconfig.json \
-            -gjunit_xml_file=res://test-results/results.xml \
-            || true
+            -gjunit_xml_file=res://test-results/results.xml
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
