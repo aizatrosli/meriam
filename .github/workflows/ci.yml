@@ -34,9 +34,10 @@ jobs:
       - name: Install GUT (v${{ env.GUT_VERSION }})
         run: |
           wget -q \
-            "https://github.com/bitwes/Gut/releases/download/v${{ env.GUT_VERSION }}/gut_${{ env.GUT_VERSION }}.zip" \
+            "https://github.com/bitwes/Gut/archive/refs/tags/v${{ env.GUT_VERSION }}.zip" \
             -O /tmp/gut.zip
-          unzip -q /tmp/gut.zip -d .
+          unzip -q /tmp/gut.zip -d /tmp/gut_src/
+          mv /tmp/gut_src/Gut-${{ env.GUT_VERSION }}/addons/gut addons/gut
           echo "GUT installed:"
           ls addons/gut/
 
