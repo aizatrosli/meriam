@@ -9,7 +9,7 @@ func before_each() -> void:
 	lives_manager.initialize(3)
 
 func after_each() -> void:
-	lives_manager.unreference()
+	lives_manager = null
 
 # ---------------------------------------------------------------------------
 # Tests

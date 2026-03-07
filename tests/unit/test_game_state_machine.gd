@@ -8,7 +8,7 @@ func before_each() -> void:
 	sm = GameState.new()
 
 func after_each() -> void:
-	sm.unreference()
+	sm = null
 
 # ---------------------------------------------------------------------------
 # Tests
