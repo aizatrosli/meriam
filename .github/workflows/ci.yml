@@ -50,7 +50,6 @@ jobs:
           artifactsPath: test-results/editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: EditMode Test Results
-          enableCoverage: true
           coverageOptions: "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Meriam"
 
       - uses: actions/upload-artifact@v4
