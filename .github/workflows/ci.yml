@@ -3,10 +3,12 @@ name: CI – Meriam Raya (Godot 4)
 on:
   push:
     branches:
+      - main
       - master
       - "claude/**"
   pull_request:
     branches:
+      - main
       - master
 
 env:
@@ -56,9 +58,10 @@ jobs:
             --display-driver headless \
             --audio-driver Dummy \
             --path . \
-            -s res://addons/gut/gut_cmdln.gd \
+            -s res://addons/gut/cli/gut_cli.gd \
             -gconfig=res://tests/.gutconfig.json \
-            -gjunit_xml_file=res://test-results/results.xml
+            -gjunit_xml_file=res://test-results/results.xml \
+            -gexit
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
