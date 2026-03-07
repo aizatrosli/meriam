@@ -33,11 +33,10 @@ jobs:
 
       - name: Install GUT (v${{ env.GUT_VERSION }})
         run: |
-          mkdir -p addons
           wget -q \
             "https://github.com/bitwes/Gut/releases/download/v${{ env.GUT_VERSION }}/gut_${{ env.GUT_VERSION }}.zip" \
             -O /tmp/gut.zip
-          unzip -q /tmp/gut.zip -d addons/
+          unzip -q /tmp/gut.zip -d .
           echo "GUT installed:"
           ls addons/gut/
 
@@ -56,7 +55,7 @@ jobs:
             --display-driver headless \
             --audio-driver Dummy \
             --path . \
-            -s addons/gut/gut_cmdln.gd \
+            -s res://addons/gut/gut_cmdln.gd \
             -gconfig=res://tests/.gutconfig.json \
             -gjunit_xml_file=res://test-results/results.xml
 
@@ -126,7 +125,7 @@ jobs:
              ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
 
       - name: Import project assets (generates .godot/)
-        run: godot --headless --path . --import || true
+        run: godot --headless --path . --import --quit || true
 
       - name: Create output directory
         run: mkdir -p ${{ matrix.output_dir }}
