@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://b_hud"]
+
+[ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TopBar" type="HBoxContainer" parent="Control"]
+anchor_right = 1.0
+offset_bottom = 48.0
+theme_override_constants/separation = 20
+
+[node name="MarkahLabel" type="Label" parent="Control/TopBar"]
+text = "Markah: 0"
+theme_override_font_sizes/font_size = 22
+size_flags_horizontal = 3
+
+[node name="PusinganLabel" type="Label" parent="Control/TopBar"]
+text = "Pusingan 1 / Round 1"
+theme_override_font_sizes/font_size = 22
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="NyawaLabel" type="Label" parent="Control/TopBar"]
+text = "Nyawa: 3"
+theme_override_font_sizes/font_size = 22
+size_flags_horizontal = 3
+horizontal_alignment = 2
+
+[node name="BottomBar" type="HBoxContainer" parent="Control"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+theme_override_constants/separation = 12
+
+[node name="LoadStatusLabel" type="Label" parent="Control/BottomBar"]
+text = "Isi..."
+theme_override_font_sizes/font_size = 18
+vertical_alignment = 1
+
+[node name="LoadProgressBar" type="ProgressBar" parent="Control/BottomBar"]
+custom_minimum_size = Vector2(200, 28)
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+size_flags_horizontal = 3
+size_flags_vertical = 4

@@ -1,0 +1,14 @@
+[gd_resource type="TargetConfig" load_steps=2 format=3 uid="uid://b_cfg_pelita"]
+
+[ext_resource type="PackedScene" path="res://scenes/targets/target_pelita.tscn" id="1_pelita"]
+
+[resource]
+target_id = "pelita"
+display_name_malay = "Pelita"
+base_health = 1
+score_value = 100
+scene = ExtResource("1_pelita")
+type = 1
+is_swinging = true
+is_moving = false
+move_speed = 0.0

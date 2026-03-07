@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://b_mainmenu"]
+
+[ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1_mainmenu"]
+[ext_resource type="Script" path="res://scenes/network/lobby_manager.gd" id="2_lobby"]
+
+[node name="MainMenu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_mainmenu")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.07, 0.07, 0.18, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(400, 500)
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+text = "🎆 MERIAM RAYA 🎆"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 48
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+text = "Permainan Meriam Buluh Raya Malam\nA Raya Night Bamboo Cannon Game"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+
+[node name="HighScoreLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+name = "HighScoreLabel"
+text = "Markah Tertinggi: 0"
+horizontal_alignment = 1
+
+[node name="MainTempatanButton" type="Button" parent="CenterContainer/VBoxContainer"]
+text = "🏠 Main Tempatan\n  (Local Co-op)"
+custom_minimum_size = Vector2(0, 64)
+theme_override_font_sizes/font_size = 20
+
+[node name="MainDalamTalianButton" type="Button" parent="CenterContainer/VBoxContainer"]
+text = "🌐 Main Dalam Talian\n  (Online Co-op)"
+custom_minimum_size = Vector2(0, 64)
+theme_override_font_sizes/font_size = 20
+
+[node name="OnlinePanel" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+
+[node name="OnlineVBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/OnlinePanel"]
+theme_override_constants/separation = 12
+
+[node name="OnlineTitle" type="Label" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+text = "Main Dalam Talian / Online Play"
+horizontal_alignment = 1
+
+[node name="CreateLobbyButton" type="Button" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+text = "Buat Bilik / Create Lobby"
+
+[node name="JoinCodeDisplayLabel" type="Label" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+text = ""
+visible = false
+horizontal_alignment = 1
+
+[node name="JoinCodeInput" type="LineEdit" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+placeholder_text = "Masukkan kod / Enter join code"
+
+[node name="JoinLobbyButton" type="Button" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+text = "Sertai Bilik / Join Lobby"
+
+[node name="LobbyManager" type="Node" parent="."]
+script = ExtResource("2_lobby")
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/MainTempatanButton" to="." method="_start_local"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/MainDalamTalianButton" to="." method="_show_online_panel"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox/CreateLobbyButton" to="." method="_create_lobby"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox/JoinLobbyButton" to="." method="_join_lobby"]

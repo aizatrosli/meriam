@@ -1,0 +1,12 @@
+[gd_resource type="RoundConfig" load_steps=3 format=3 uid="uid://b_round1"]
+
+[ext_resource type="Resource" path="res://resources/target_spawn_entry_pelita.tres" id="1_entry"]
+
+[resource]
+round_number = 1
+round_announcement_malay = "Pusingan 1 – Pelita dalam kawasan!"
+time_between_spawns = 1.5
+round_start_delay = 3.0
+targets = [ExtResource("1_entry")]
+completion_bonus_score = 300
+time_limit = 60.0

@@ -1,0 +1,14 @@
+[gd_resource type="TargetConfig" load_steps=2 format=3 uid="uid://b_cfg_belon"]
+
+[ext_resource type="PackedScene" path="res://scenes/targets/target_belon.tscn" id="1_belon"]
+
+[resource]
+target_id = "belon"
+display_name_malay = "Belon"
+base_health = 1
+score_value = 250
+scene = ExtResource("1_belon")
+type = 3
+is_swinging = false
+is_moving = false
+move_speed = 0.0

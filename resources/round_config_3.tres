@@ -1,0 +1,26 @@
+[gd_resource type="RoundConfig" load_steps=4 format=3 uid="uid://b_round3"]
+
+[ext_resource type="Resource" path="res://resources/target_spawn_entry_pelita.tres" id="1_pelita"]
+[ext_resource type="Resource" path="res://resources/target_config_kelapa.tres" id="2_kelapa"]
+[ext_resource type="Resource" path="res://resources/target_config_belon.tres" id="3_belon"]
+
+[sub_resource type="TargetSpawnEntry" id="1"]
+config = ExtResource("2_kelapa")
+count = 3
+spacing = 1.8
+height_offset = -10.0
+
+[sub_resource type="TargetSpawnEntry" id="2"]
+config = ExtResource("3_belon")
+count = 2
+spacing = 2.5
+height_offset = 80.0
+
+[resource]
+round_number = 3
+round_announcement_malay = "Pusingan 3 – Semuanya ada! All targets!"
+time_between_spawns = 1.0
+round_start_delay = 2.0
+targets = [ExtResource("1_pelita"), SubResource("1"), SubResource("2")]
+completion_bonus_score = 800
+time_limit = 80.0

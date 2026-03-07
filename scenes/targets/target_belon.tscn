@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b_belon"]
+
+[ext_resource type="Script" path="res://scenes/targets/target_belon.gd" id="1_belon"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 16.0
+
+[node name="TargetBelon" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_belon")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.2, 0.5, 1)

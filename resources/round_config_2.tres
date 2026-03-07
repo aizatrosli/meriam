@@ -1,0 +1,19 @@
+[gd_resource type="RoundConfig" load_steps=3 format=3 uid="uid://b_round2"]
+
+[ext_resource type="Resource" path="res://resources/target_spawn_entry_pelita.tres" id="1_pelita"]
+[ext_resource type="Resource" path="res://resources/target_config_kelapa.tres" id="2_kelapa"]
+
+[sub_resource type="TargetSpawnEntry" id="1"]
+config = ExtResource("2_kelapa")
+count = 2
+spacing = 2.0
+height_offset = -10.0
+
+[resource]
+round_number = 2
+round_announcement_malay = "Pusingan 2 – Pelita dan Kelapa!"
+time_between_spawns = 1.2
+round_start_delay = 2.5
+targets = [ExtResource("1_pelita"), SubResource("1")]
+completion_bonus_score = 500
+time_limit = 70.0
