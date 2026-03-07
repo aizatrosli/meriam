@@ -13,9 +13,7 @@
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.2d.animation": "9.1.0",
     "com.unity.cinemachine": "2.9.7",
-    "com.unity.render-pipelines.universal": "14.0.10",
-    "com.unity.audio.dsp-graph": "1.0.11",
-    "com.unity.particles": "1.0.0"
+    "com.unity.render-pipelines.universal": "14.0.10"
   },
   "testables": [
     "com.unity.inputsystem",
