@@ -13,7 +13,7 @@ on:
 
 env:
   GODOT_VERSION: "4.3"
-  GUT_VERSION: "9.3.0"
+  GUT_VERSION: "9.4.0"
 
 jobs:
 
@@ -58,7 +58,7 @@ jobs:
             --display-driver headless \
             --audio-driver Dummy \
             --path . \
-            -s res://addons/gut/cli/gut_cli.gd \
+            -s res://addons/gut/gut_cmdln.gd \
             -gconfig=res://tests/.gutconfig.json \
             -gjunit_xml_file=res://test-results/results.xml \
             -gexit

@@ -59,7 +59,7 @@ func test_target_not_alive_after_lethal_damage() -> void:
 
 func test_target_destroyed_after_lethal_damage() -> void:
 	target_pelita.take_damage(3)
-	await yield_for(0.1)
+	await wait_seconds(0.1)
 	# After queue_free and a frame, instance should be freed
 	assert_false(is_instance_valid(target_pelita))
 

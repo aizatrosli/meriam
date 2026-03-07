@@ -94,7 +94,7 @@ func test_aimer_unlocks_after_cooldown() -> void:
 	loader.force_load()
 	firer.fire()
 	assert_true(aimer.is_locked)
-	await yield_for(0.2)
+	await wait_seconds(0.2)
 	assert_false(aimer.is_locked)
 
 func test_fire_clears_loaded_state() -> void:
