@@ -14,10 +14,13 @@ func shake(strength: float, duration: float) -> void:
 func _process(delta: float) -> void:
 	if _shake_duration > 0.0:
 		_shake_duration -= delta
-		offset = Vector2(
-			randf_range(-_shake_strength, _shake_strength),
-			randf_range(-_shake_strength, _shake_strength)
-		)
+		if _shake_duration > 0.0:
+			offset = Vector2(
+				randf_range(-_shake_strength, _shake_strength),
+				randf_range(-_shake_strength, _shake_strength)
+			)
+		else:
+			_shake_duration = 0.0
+			offset = Vector2.ZERO
 	else:
-		_shake_duration = 0.0
 		offset = Vector2.ZERO
