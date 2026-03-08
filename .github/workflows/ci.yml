@@ -122,12 +122,6 @@ jobs:
             godot-import-${{ matrix.platform }}-
             godot-import-
 
-      - name: Set up export templates
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          mv /root/.local/share/godot/templates/${{ env.GODOT_VERSION }}.stable/* \
-             ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
-
       - name: Import project assets (generates .godot/)
         run: godot --headless --path . --import --quit || true
 
