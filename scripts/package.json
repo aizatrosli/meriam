@@ -1,0 +1,14 @@
+{
+  "name": "meriam-raya-ci-scripts",
+  "version": "1.0.0",
+  "description": "CI tooling for Meriam Raya – web smoke tests and local dev utilities.",
+  "private": true,
+  "scripts": {
+    "serve": "node serve_web_ci.js",
+    "test:web": "playwright test web_smoke.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "wait-on": "^7.2.0"
+  }
+}
