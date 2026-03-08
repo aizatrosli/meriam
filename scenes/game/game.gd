@@ -14,6 +14,7 @@ extends Node2D
 @onready var network_manager: NetworkGameManager = $NetworkGameManager
 @onready var hud: HUD = $HUD
 @onready var round_announcement: RoundAnnouncementUI = $RoundAnnouncementUI
+@onready var camera: CameraShake = $CameraShake
 
 # ---------------------------------------------------------------------------
 # Lifecycle
@@ -52,6 +53,10 @@ func _ready() -> void:
 
 	# Register round manager with GameManager
 	GameManager.round_manager = round_manager
+
+	# Wire camera shake
+	cannon.firer.fired.connect(func(): camera.shake(6.0, 0.2))
+	GameManager.life_lost.connect(func(_l): camera.shake(10.0, 0.35))
 
 	# Start the game
 	GameManager.start_game(config)

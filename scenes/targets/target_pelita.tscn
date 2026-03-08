@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b_pelita"]
+[gd_scene load_steps=4 format=3 uid="uid://b_pelita"]
 
 [ext_resource type="Script" path="res://scenes/targets/target_pelita.gd" id="1_pelita"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/smoke_puff.tscn" id="2_smoke"]
 
 [sub_resource type="CircleShape2D" id="1"]
 radius = 12.0
@@ -9,6 +10,8 @@ radius = 12.0
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_pelita")
+flame_node = NodePath("FlameNode")
+smoke_vfx_scene = ExtResource("2_smoke")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("1")

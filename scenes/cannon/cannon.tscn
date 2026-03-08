@@ -24,6 +24,21 @@ position = Vector2(40, 0)
 [node name="MuzzlePoint" type="Marker2D" parent="BarrelPivot"]
 position = Vector2(80, 0)
 
+[node name="MuzzleFlash" type="CPUParticles2D" parent="BarrelPivot/MuzzlePoint"]
+emitting = false
+amount = 12
+lifetime = 0.15
+one_shot = true
+explosiveness = 0.9
+randomness = 0.2
+direction = Vector2(1, 0)
+spread = 30.0
+initial_velocity_min = 80.0
+initial_velocity_max = 150.0
+color = Color(1, 0.7, 0.1, 1)
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+
 [node name="CannonAimer" type="Node2D" parent="."]
 script = ExtResource("2_aimer")
 

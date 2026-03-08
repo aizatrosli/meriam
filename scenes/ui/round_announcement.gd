@@ -32,6 +32,12 @@ func show_round_announcement(round_number: int, malay_text: String = "") -> void
 # ---------------------------------------------------------------------------
 
 func _show_then_hide() -> void:
+	panel.modulate.a = 0.0
 	panel.show()
+	var tw_in := create_tween()
+	tw_in.tween_property(panel, "modulate:a", 1.0, 0.3)
 	await get_tree().create_timer(display_duration).timeout
+	var tw_out := create_tween()
+	tw_out.tween_property(panel, "modulate:a", 0.0, 0.25)
+	await tw_out.finished
 	panel.hide()

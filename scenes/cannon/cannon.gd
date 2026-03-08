@@ -9,6 +9,7 @@ extends Node2D
 @onready var loader: CannonLoader = $CannonLoader
 @onready var firer: CannonFirer = $CannonFirer
 @onready var reload_indicator: CannonReloadIndicator = $ReloadIndicatorNode
+@onready var muzzle_flash: CPUParticles2D = $BarrelPivot/MuzzlePoint/MuzzleFlash
 
 func _ready() -> void:
 	# Wire sub-components together (no config yet; set_config() called by game.gd)
@@ -20,6 +21,7 @@ func _ready() -> void:
 	reload_indicator.loader = loader
 	reload_indicator.fill_bar = $ReloadUI/FillBar
 	reload_indicator.load_status_label = $ReloadUI/LoadStatusLabel
+	firer.fired.connect(func(): muzzle_flash.restart())
 
 ## Called by game.gd once the GameConfig resource is available.
 func set_config(config: GameConfig) -> void:

@@ -29,14 +29,20 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func show_game_over(score: int) -> void:
-	game_over_panel.show()
 	final_score_label.text = "Markah Akhir: %d" % score
 	high_score_label.text = "Tertinggi: %d" % ScoreManager.get_high_score()
+	game_over_panel.modulate.a = 0.0
+	game_over_panel.show()
+	var tw := create_tween()
+	tw.tween_property(game_over_panel, "modulate:a", 1.0, 0.35)
 
 func show_victory(score: int) -> void:
+	victory_panel.modulate.a = 0.0
 	victory_panel.show()
 	if final_score_label_v:
 		final_score_label_v.text = "Tahniah! Markah: %d" % score
+	var tw := create_tween()
+	tw.tween_property(victory_panel, "modulate:a", 1.0, 0.35)
 
 # ---------------------------------------------------------------------------
 # Private

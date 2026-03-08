@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b_belon"]
+[gd_scene load_steps=4 format=3 uid="uid://b_belon"]
 
 [ext_resource type="Script" path="res://scenes/targets/target_belon.gd" id="1_belon"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/balloon_pop.tscn" id="2_pop"]
 
 [sub_resource type="CircleShape2D" id="1"]
 radius = 16.0
@@ -9,6 +10,7 @@ radius = 16.0
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_belon")
+pop_vfx_scene = ExtResource("2_pop")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
