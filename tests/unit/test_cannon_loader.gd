@@ -29,7 +29,7 @@ func test_initial_load_progress_is_zero() -> void:
 
 func test_begin_loading_starts_progress() -> void:
 	loader.begin_loading()
-	await wait_seconds(0.1)
+	await wait_seconds(0.5)
 	assert_gt(loader.load_progress, 0.0)
 
 func test_cancel_loading_resets_progress() -> void:

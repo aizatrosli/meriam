@@ -70,9 +70,8 @@ func test_multiple_hits_accumulate() -> void:
 
 func test_cannot_damage_dead_target() -> void:
 	target_pelita.take_damage(3)  # kills it
-	# After death, further damage is ignored (is_alive check)
-	# We verify no error is thrown
-	pass  # GUT assertion: no crash = pass
+	target_pelita.take_damage(99)  # should be no-op due to is_alive guard
+	assert_eq(target_pelita.current_health, 0)
 
 # ---------------------------------------------------------------------------
 # Tests – Belon specific
