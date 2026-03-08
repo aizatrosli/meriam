@@ -18,8 +18,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(440, 520)
-theme_override_constants/separation = 20
+custom_minimum_size = Vector2(460, 0)
+theme_override_constants/separation = 14
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 text = "MERIAM RAYA"
@@ -36,6 +36,8 @@ theme_override_font_sizes/font_size = 16
 [node name="HighScoreLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 text = "Markah Tertinggi: 0"
 horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/VBoxContainer"]
 
 [node name="MainTempatanButton" type="Button" parent="CenterContainer/VBoxContainer"]
 text = "Main Tempatan\n(Local Co-op)"
@@ -70,6 +72,143 @@ placeholder_text = "Masukkan kod / Enter join code"
 
 [node name="JoinLobbyButton" type="Button" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
 text = "Sertai Bilik / Join Lobby"
+
+[node name="CloseOnlineButton" type="Button" parent="CenterContainer/VBoxContainer/OnlinePanel/OnlineVBox"]
+text = "Tutup / Close"
+
+[node name="CaraMainButton" type="Button" parent="CenterContainer/VBoxContainer"]
+text = "Cara Main / How to Play"
+custom_minimum_size = Vector2(0, 48)
+theme_override_font_sizes/font_size = 18
+
+[node name="HowToPlayPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+
+[node name="HowToPlayVBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HowToPlayPanel"]
+theme_override_constants/separation = 8
+
+[node name="HowToPlayTitle" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+text = "Cara Main / How to Play"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="HSeparatorHTP" type="HSeparator" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+
+[node name="ControlsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+columns = 2
+
+[node name="P1RoleLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/ControlsGrid"]
+text = "Pemain 1\n(Anak Sulung)"
+size_flags_horizontal = 3
+
+[node name="P1KeysLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/ControlsGrid"]
+text = "W / S  -->  Laras meriam (Aim)"
+size_flags_horizontal = 3
+
+[node name="P2RoleLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/ControlsGrid"]
+text = "Pemain 2\n(Anak Bongsu)"
+size_flags_horizontal = 3
+
+[node name="P2KeysLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/ControlsGrid"]
+text = "Tahan SPACE  -->  Isi ubat (Load)\nEnter  -->  Tembak (Fire)"
+size_flags_horizontal = 3
+
+[node name="HSeparatorHTP2" type="HSeparator" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+
+[node name="TargetsTitle" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+text = "Sasaran / Targets"
+horizontal_alignment = 1
+
+[node name="TargetsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+columns = 2
+
+[node name="PelitaNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "Pelita (Lampu / Lamp)"
+size_flags_horizontal = 3
+
+[node name="PelitaPtsLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "100 mata / pts"
+horizontal_alignment = 2
+size_flags_horizontal = 3
+
+[node name="KelapaNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "Kelapa (Coconut)"
+size_flags_horizontal = 3
+
+[node name="KelapaPtsLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "150 mata / pts"
+horizontal_alignment = 2
+size_flags_horizontal = 3
+
+[node name="BelonNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "Belon (Balloon)"
+size_flags_horizontal = 3
+
+[node name="BelonPtsLabel" type="Label" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox/TargetsGrid"]
+text = "200 mata / pts"
+horizontal_alignment = 2
+size_flags_horizontal = 3
+
+[node name="CloseHTPButton" type="Button" parent="CenterContainer/VBoxContainer/HowToPlayPanel/HowToPlayVBox"]
+text = "Tutup / Close"
+
+[node name="TetapanButton" type="Button" parent="CenterContainer/VBoxContainer"]
+text = "Tetapan / Settings"
+custom_minimum_size = Vector2(0, 48)
+theme_override_font_sizes/font_size = 18
+
+[node name="SettingsPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+
+[node name="SettingsVBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/SettingsPanel"]
+theme_override_constants/separation = 12
+
+[node name="SettingsTitle" type="Label" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+text = "Tetapan / Settings"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="HSeparatorS" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+
+[node name="VolumeLabel" type="Label" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+text = "Kelantangan / Volume"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+custom_minimum_size = Vector2(0, 32)
+
+[node name="FullscreenRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+
+[node name="FullscreenLabel" type="Label" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox/FullscreenRow"]
+text = "Skrin Penuh / Fullscreen"
+size_flags_horizontal = 3
+
+[node name="FullscreenToggle" type="CheckButton" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox/FullscreenRow"]
+
+[node name="HSeparatorS2" type="HSeparator" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+
+[node name="CloseSettingsButton" type="Button" parent="CenterContainer/VBoxContainer/SettingsPanel/SettingsVBox"]
+text = "Simpan & Tutup / Save & Close"
+
+[node name="KeluarButton" type="Button" parent="CenterContainer/VBoxContainer"]
+text = "Keluar / Quit"
+custom_minimum_size = Vector2(0, 48)
+theme_override_font_sizes/font_size = 16
+
+[node name="VersionLabel" type="Label" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -30.0
+text = "v1.0.0"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 13
+modulate = Color(1, 1, 1, 0.35)
 
 [node name="LobbyManager" type="Node" parent="."]
 script = ExtResource("2_lobby")
