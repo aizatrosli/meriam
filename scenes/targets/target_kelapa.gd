@@ -6,6 +6,20 @@
 class_name TargetKelapa
 extends RigidBody2D
 
+# ---------------------------------------------------------------------------
+# Visual Asset Replacements
+# ---------------------------------------------------------------------------
+## REPLACE ME: Assign a Sprite2D texture for the kelapa (coconut).
+## Suggested: a round brown coconut viewed from above, approx 40×40 px,
+## so the circular collider (radius 20) wraps it cleanly
+## (e.g. res://assets/kelapa.png).
+@export var body_texture: Texture2D
+
+## REPLACE ME: Assign an AudioStream for the coconut-hit thunk sound.
+## Suggested: a wooden knock or coconut impact clip in OGG format
+## (e.g. res://assets/audio/kelapa_hit.ogg).
+@export var hit_sound: AudioStream
+
 @export var config: TargetConfig
 @export var roll_force: float = 200.0
 
@@ -24,6 +38,11 @@ func _ready() -> void:
 	add_to_group("damageable")
 	_current_health = max_health
 	freeze = true  # kinematic until hit
+
+	# Apply exported texture to the kelapa sprite when provided by the artist.
+	var sprite := get_node_or_null("Sprite2D") as Sprite2D
+	if sprite and body_texture:
+		sprite.texture = body_texture
 
 func initialize(health_multiplier: float = 1.0) -> void:
 	_current_health = maxi(1, roundi(max_health * health_multiplier))
@@ -49,6 +68,12 @@ func _on_hit() -> void:
 	freeze = false
 	apply_central_impulse(Vector2.RIGHT * roll_force)
 	apply_torque_impulse(roll_force * 0.5)
+
+	# Play hit sound if an AudioStreamPlayer2D child node is present in the scene.
+	var audio := get_node_or_null("AudioStreamPlayer2D") as AudioStreamPlayer2D
+	if audio and hit_sound:
+		audio.stream = hit_sound
+		audio.play()
 
 func _on_death() -> void:
 	var score_value: int = config.score_value if config else 100

@@ -5,6 +5,20 @@
 class_name TargetBelon
 extends TargetBase
 
+# ---------------------------------------------------------------------------
+# Visual Asset Replacements
+# ---------------------------------------------------------------------------
+## REPLACE ME: Assign a Sprite2D texture for the balloon (belon).
+## Suggested: a round balloon image with a highlight/sheen, approx 32×40 px,
+## pivot at the bottom-centre (knot point) so it sways realistically
+## (e.g. res://assets/belon.png).
+@export var balloon_texture: Texture2D
+
+## REPLACE ME: Set the balloon colour tint (applied as Sprite2D.modulate).
+## Change this per-instance in the Inspector for red, blue, yellow, green variety.
+## Default is festive pink for Raya celebrations.
+@export var balloon_color: Color = Color(1, 0.2, 0.5, 1)
+
 @export var drift_speed: float = 0.3
 @export var drift_amplitude: float = 0.2
 @export var pop_vfx_scene: PackedScene
@@ -18,6 +32,14 @@ var _start_pos: Vector2
 func _ready() -> void:
 	super._ready()
 	_start_pos = position
+
+	# Apply exported texture and colour tint to the balloon sprite.
+	var sprite := get_node_or_null("Sprite2D") as Sprite2D
+	if sprite:
+		if balloon_texture:
+			sprite.texture = balloon_texture
+		# Always apply the colour tint (even without a texture it tints the placeholder).
+		sprite.modulate = balloon_color
 
 # ---------------------------------------------------------------------------
 # Process

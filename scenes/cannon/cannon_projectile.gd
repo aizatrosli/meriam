@@ -7,6 +7,15 @@
 class_name CannonProjectile
 extends Area2D
 
+# ---------------------------------------------------------------------------
+# Visual Asset Replacements
+# ---------------------------------------------------------------------------
+## REPLACE ME: Assign a texture for the bola meriam (cannonball).
+## Suggested: a dark iron or carved-wood sphere image, approx 16×16 px,
+## centred on the sprite pivot (e.g. res://assets/cannonball.png).
+## The Sprite2D is pre-scaled to 0.5×, so a 32×32 source image works well.
+@export var ball_texture: Texture2D
+
 var _damage: int = 1
 var _lifetime: float = 4.0
 var _velocity: Vector2 = Vector2.ZERO
@@ -17,6 +26,11 @@ var _hit: bool = false  # prevents miss notification if we already hit something
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
+	# Apply exported texture to the cannonball sprite when provided by the artist.
+	var sprite := get_node_or_null("Sprite2D") as Sprite2D
+	if sprite and ball_texture:
+		sprite.texture = ball_texture
+
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 

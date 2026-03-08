@@ -5,6 +5,27 @@
 class_name Cannon
 extends Node2D
 
+# ---------------------------------------------------------------------------
+# Visual Asset Replacements
+# ---------------------------------------------------------------------------
+## REPLACE ME: Assign a Sprite2D texture for the meriam (cannon body).
+## Suggested: a painted bamboo or wooden cannon base image aligned to origin,
+## approx 80×40 px (e.g. res://assets/cannon_body.png).
+@export var cannon_body_texture: Texture2D
+
+## REPLACE ME: Assign a Sprite2D texture for the barrel (laras meriam).
+## Suggested: a horizontal bamboo pipe image, approx 80×20 px, tip pointing
+## to the right so it aligns with the muzzle at x=80 (e.g. res://assets/barrel.png).
+@export var barrel_texture: Texture2D
+
+## REPLACE ME: Assign an AudioStream for the cannon fire sound (bunyi meriam).
+## Suggested: a loud traditional meriam buluh BOOM clip in OGG format
+## (e.g. res://assets/audio/cannon_fire.ogg).
+@export var fire_sound: AudioStream
+
+# ---------------------------------------------------------------------------
+# Internal nodes
+# ---------------------------------------------------------------------------
 @onready var aimer: CannonAimer = $CannonAimer
 @onready var loader: CannonLoader = $CannonLoader
 @onready var firer: CannonFirer = $CannonFirer
@@ -12,11 +33,22 @@ extends Node2D
 @onready var muzzle_flash: CPUParticles2D = $BarrelPivot/MuzzlePoint/MuzzleFlash
 
 func _ready() -> void:
+	# Apply exported textures to sprite placeholders when provided by the artist.
+	# Without a texture the Sprite2D stays invisible – the collision shape still works.
+	var cannon_body := get_node_or_null("CannonBody") as Sprite2D
+	if cannon_body and cannon_body_texture:
+		cannon_body.texture = cannon_body_texture
+
+	var barrel_sprite := get_node_or_null("BarrelPivot/BarrelSprite") as Sprite2D
+	if barrel_sprite and barrel_texture:
+		barrel_sprite.texture = barrel_texture
+
 	# Wire sub-components together (no config yet; set_config() called by game.gd)
 	firer.aimer = aimer
 	firer.loader = loader
 	firer.muzzle_point = $BarrelPivot/MuzzlePoint
 	firer.audio_player = $AudioStreamPlayer2D
+	firer.fire_sound = fire_sound  # pass exported audio asset into firer
 	aimer.barrel_pivot = $BarrelPivot
 	reload_indicator.loader = loader
 	reload_indicator.fill_bar = $ReloadUI/FillBar

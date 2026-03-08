@@ -12,6 +12,8 @@ var aimer: CannonAimer = null
 var loader: CannonLoader = null
 var muzzle_point: Marker2D = null
 var audio_player: AudioStreamPlayer2D = null
+## REPLACE ME: Assign via cannon.gd's @export var fire_sound in the Inspector.
+## Cannon._ready() passes that exported AudioStream here automatically.
 var fire_sound: AudioStream = null
 
 var can_fire: bool:
