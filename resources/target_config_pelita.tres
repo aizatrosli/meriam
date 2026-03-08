@@ -1,8 +1,10 @@
-[gd_resource type="TargetConfig" load_steps=2 format=3 uid="uid://b_cfg_pelita"]
+[gd_resource type="Resource" script_class="TargetConfig" load_steps=3 format=3 uid="uid://b_cfg_pelita"]
 
+[ext_resource type="Script" path="res://resources/target_config.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/targets/target_pelita.tscn" id="1_pelita"]
 
 [resource]
+script = ExtResource("1_script")
 target_id = "pelita"
 display_name_malay = "Pelita"
 base_health = 1
