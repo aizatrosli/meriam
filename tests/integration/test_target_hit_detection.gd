@@ -26,7 +26,7 @@ func after_each() -> void:
 		target_pelita.queue_free()
 	if is_instance_valid(target_belon):
 		target_belon.queue_free()
-	config.unreference()
+	config = null
 
 # ---------------------------------------------------------------------------
 # Tests – TargetBase behaviour

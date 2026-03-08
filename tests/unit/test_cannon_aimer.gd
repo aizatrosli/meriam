@@ -16,7 +16,8 @@ func before_each() -> void:
 
 func after_each() -> void:
 	aimer.queue_free()
-	config.unreference()
+	aimer = null
+	config = null
 
 # ---------------------------------------------------------------------------
 # Tests

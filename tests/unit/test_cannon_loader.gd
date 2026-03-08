@@ -14,7 +14,8 @@ func before_each() -> void:
 
 func after_each() -> void:
 	loader.queue_free()
-	config.unreference()
+	loader = null
+	config = null
 
 # ---------------------------------------------------------------------------
 # Tests

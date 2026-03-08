@@ -28,9 +28,9 @@ func before_each() -> void:
 	round_config.time_limit = 60.0
 
 func after_each() -> void:
-	round_config.unreference()
-	spawn_entry.unreference()
-	target_config.unreference()
+	round_config = null
+	spawn_entry = null
+	target_config = null
 
 # ---------------------------------------------------------------------------
 # Tests

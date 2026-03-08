@@ -16,7 +16,7 @@ func before_each() -> void:
 	config.move_speed = 0.0
 
 func after_each() -> void:
-	config.unreference()
+	config = null
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -51,7 +51,7 @@ func test_kelapa_config_is_rolling() -> void:
 	kelapa.move_speed = 1.0
 	assert_eq(kelapa.type, TargetConfig.TargetType.ROLLING)
 	assert_true(kelapa.is_moving)
-	kelapa.unreference()
+	kelapa = null
 
 func test_belon_config_is_floating() -> void:
 	var belon := TargetConfig.new()
@@ -61,4 +61,4 @@ func test_belon_config_is_floating() -> void:
 	belon.score_value = 250
 	assert_eq(belon.type, TargetConfig.TargetType.FLOATING)
 	assert_gt(belon.score_value, 100)  # bonus target
-	belon.unreference()
+	belon = null

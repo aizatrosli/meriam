@@ -29,9 +29,9 @@ func before_each() -> void:
 	round_config.completion_bonus_score = 500
 
 func after_each() -> void:
-	round_config.unreference()
-	spawn_entry.unreference()
-	target_config.unreference()
+	round_config = null
+	spawn_entry = null
+	target_config = null
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -72,7 +72,7 @@ func test_multiple_entries_total_count() -> void:
 	for entry: TargetSpawnEntry in round_config.targets:
 		total += entry.count
 	assert_eq(total, 6)
-	entry2.unreference()
+	entry2 = null
 
 func test_round_announcement_malay_not_empty() -> void:
 	assert_ne(round_config.round_announcement_malay, "")

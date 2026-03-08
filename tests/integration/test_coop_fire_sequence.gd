@@ -50,7 +50,12 @@ func after_each() -> void:
 	firer.queue_free()
 	loader.queue_free()
 	aimer.queue_free()
-	config.unreference()
+	p1 = null
+	p2 = null
+	firer = null
+	loader = null
+	aimer = null
+	config = null
 
 # ---------------------------------------------------------------------------
 # Tests
