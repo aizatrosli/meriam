@@ -24,6 +24,9 @@ jobs:
   test:
     name: GUT Tests
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
     container:
       image: barichello/godot-ci:4.3
 
