@@ -27,8 +27,11 @@ var _hit: bool = false  # prevents miss notification if we already hit something
 
 func _ready() -> void:
 	# Apply exported texture to the cannonball sprite when provided by the artist.
+	# Falls back to a dark-grey circle so the projectile is visible without art assets.
 	var sprite := get_node_or_null("Sprite2D") as Sprite2D
-	if sprite and ball_texture:
+	if sprite:
+		if ball_texture == null:
+			ball_texture = _make_circle_texture(8, Color(0.2, 0.2, 0.2))
 		sprite.texture = ball_texture
 
 	body_entered.connect(_on_body_entered)
@@ -76,3 +79,19 @@ func _try_damage(node: Node) -> void:
 func _on_lifetime_expired() -> void:
 	if not _hit:
 		queue_free()
+
+# ---------------------------------------------------------------------------
+# Placeholder texture helper (used when no art assets are assigned)
+# ---------------------------------------------------------------------------
+
+static func _make_circle_texture(radius: int, color: Color) -> ImageTexture:
+	var d := radius * 2
+	var img := Image.create(d, d, false, Image.FORMAT_RGBA8)
+	img.fill(Color.TRANSPARENT)
+	for y in d:
+		for x in d:
+			var dx := x - radius
+			var dy := y - radius
+			if dx * dx + dy * dy <= radius * radius:
+				img.set_pixel(x, y, color)
+	return ImageTexture.create_from_image(img)

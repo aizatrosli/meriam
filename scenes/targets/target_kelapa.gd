@@ -40,8 +40,11 @@ func _ready() -> void:
 	freeze = true  # kinematic until hit
 
 	# Apply exported texture to the kelapa sprite when provided by the artist.
+	# Falls back to a brown circle so the coconut is visible without art assets.
 	var sprite := get_node_or_null("Sprite2D") as Sprite2D
-	if sprite and body_texture:
+	if sprite:
+		if body_texture == null:
+			body_texture = _make_circle_texture(20, Color(0.45, 0.28, 0.10))
 		sprite.texture = body_texture
 
 func initialize(health_multiplier: float = 1.0) -> void:
@@ -80,3 +83,19 @@ func _on_death() -> void:
 	GameManager.on_target_defeated(score_value)
 	# Don't destroy immediately – let it roll first
 	get_tree().create_timer(1.5).timeout.connect(queue_free)
+
+# ---------------------------------------------------------------------------
+# Placeholder texture helper (used when no art assets are assigned)
+# ---------------------------------------------------------------------------
+
+static func _make_circle_texture(radius: int, color: Color) -> ImageTexture:
+	var d := radius * 2
+	var img := Image.create(d, d, false, Image.FORMAT_RGBA8)
+	img.fill(Color.TRANSPARENT)
+	for y in d:
+		for x in d:
+			var dx := x - radius
+			var dy := y - radius
+			if dx * dx + dy * dy <= radius * radius:
+				img.set_pixel(x, y, color)
+	return ImageTexture.create_from_image(img)

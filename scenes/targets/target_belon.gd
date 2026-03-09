@@ -34,11 +34,12 @@ func _ready() -> void:
 	_start_pos = position
 
 	# Apply exported texture and colour tint to the balloon sprite.
+	# Falls back to a solid-colour circle so the balloon is visible without art assets.
 	var sprite := get_node_or_null("Sprite2D") as Sprite2D
 	if sprite:
-		if balloon_texture:
-			sprite.texture = balloon_texture
-		# Always apply the colour tint (even without a texture it tints the placeholder).
+		if balloon_texture == null:
+			balloon_texture = _make_circle_texture(18, balloon_color)
+		sprite.texture = balloon_texture
 		sprite.modulate = balloon_color
 
 # ---------------------------------------------------------------------------
@@ -62,3 +63,19 @@ func _spawn_death_effect() -> void:
 		var vfx := pop_vfx_scene.instantiate()
 		get_tree().get_root().add_child(vfx)
 		vfx.global_position = global_position
+
+# ---------------------------------------------------------------------------
+# Placeholder texture helper (used when no art assets are assigned)
+# ---------------------------------------------------------------------------
+
+static func _make_circle_texture(radius: int, color: Color) -> ImageTexture:
+	var d := radius * 2
+	var img := Image.create(d, d, false, Image.FORMAT_RGBA8)
+	img.fill(Color.TRANSPARENT)
+	for y in d:
+		for x in d:
+			var dx := x - radius
+			var dy := y - radius
+			if dx * dx + dy * dy <= radius * radius:
+				img.set_pixel(x, y, color)
+	return ImageTexture.create_from_image(img)

@@ -41,12 +41,17 @@ func _ready() -> void:
 	_swing_offset = randf_range(0.0, TAU)
 
 	# Apply exported textures to sprite placeholders when provided by the artist.
+	# Falls back to solid-colour rectangles so the pelita is visible without art assets.
 	var body_sprite := get_node_or_null("Sprite2D") as Sprite2D
-	if body_sprite and body_texture:
+	if body_sprite:
+		if body_texture == null:
+			body_texture = _make_rect_texture(20, 36, Color(0.85, 0.55, 0.10))
 		body_sprite.texture = body_texture
 
 	var flame_sprite := get_node_or_null("FlameNode/FlameSpriteD") as Sprite2D
-	if flame_sprite and flame_texture:
+	if flame_sprite:
+		if flame_texture == null:
+			flame_texture = _make_rect_texture(12, 20, Color(1.0, 0.5, 0.0))
 		flame_sprite.texture = flame_texture
 
 	var point_light := get_node_or_null("FlameNode/PointLight2D") as PointLight2D
@@ -81,3 +86,12 @@ func _spawn_death_effect() -> void:
 		var vfx := smoke_vfx_scene.instantiate()
 		get_tree().get_root().add_child(vfx)
 		vfx.global_position = global_position
+
+# ---------------------------------------------------------------------------
+# Placeholder texture helper (used when no art assets are assigned)
+# ---------------------------------------------------------------------------
+
+static func _make_rect_texture(w: int, h: int, color: Color) -> ImageTexture:
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	img.fill(color)
+	return ImageTexture.create_from_image(img)

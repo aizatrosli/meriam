@@ -34,13 +34,18 @@ extends Node2D
 
 func _ready() -> void:
 	# Apply exported textures to sprite placeholders when provided by the artist.
-	# Without a texture the Sprite2D stays invisible – the collision shape still works.
+	# Falls back to a solid-colour ImageTexture so the cannon is visible during
+	# development even when no art assets have been assigned.
 	var cannon_body := get_node_or_null("CannonBody") as Sprite2D
-	if cannon_body and cannon_body_texture:
+	if cannon_body:
+		if cannon_body_texture == null:
+			cannon_body_texture = _make_rect_texture(80, 40, Color(0.55, 0.35, 0.15))
 		cannon_body.texture = cannon_body_texture
 
 	var barrel_sprite := get_node_or_null("BarrelPivot/BarrelSprite") as Sprite2D
-	if barrel_sprite and barrel_texture:
+	if barrel_sprite:
+		if barrel_texture == null:
+			barrel_texture = _make_rect_texture(80, 16, Color(0.35, 0.20, 0.08))
 		barrel_sprite.texture = barrel_texture
 
 	# Wire sub-components together (no config yet; set_config() called by game.gd)
@@ -60,3 +65,12 @@ func set_config(config: GameConfig) -> void:
 	aimer.config = config
 	loader.config = config
 	firer.config = config
+
+# ---------------------------------------------------------------------------
+# Placeholder texture helpers (used when no art assets are assigned)
+# ---------------------------------------------------------------------------
+
+static func _make_rect_texture(w: int, h: int, color: Color) -> ImageTexture:
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	img.fill(color)
+	return ImageTexture.create_from_image(img)
