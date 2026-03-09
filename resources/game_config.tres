@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameConfig" load_steps=6 format=3 uid="uid://b_gameconfig"]
+[gd_resource type="Resource" script_class="GameConfig" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://resources/game_config.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/cannon/cannon_projectile.tscn" id="1_ball"]

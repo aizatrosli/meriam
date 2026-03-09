@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b_belon"]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/targets/target_belon.gd" id="1_belon"]
 [ext_resource type="PackedScene" path="res://scenes/vfx/balloon_pop.tscn" id="2_pop"]

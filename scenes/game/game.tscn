@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b_game"]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scenes/game/round_manager.gd" id="2_rm"]

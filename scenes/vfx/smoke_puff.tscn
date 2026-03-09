@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://b_smokepuff"]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scenes/vfx/vfx_auto_free.gd" id="1_vfx"]
 

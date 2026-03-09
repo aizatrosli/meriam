@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RoundConfig" load_steps=5 format=3 uid="uid://b_round2"]
+[gd_resource type="Resource" script_class="RoundConfig" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://resources/round_config.gd" id="1_rcscript"]
 [ext_resource type="Script" path="res://resources/target_spawn_entry.gd" id="2_tsescript"]
