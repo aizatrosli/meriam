@@ -1,6 +1,11 @@
 # Godot 4 .gitignore
-# Generated files
-.godot/
+# Generated files — exclude all of .godot/ EXCEPT uid_cache.bin.
+# uid_cache.bin maps resource UIDs to paths. Without it, instanced PackedScenes
+# fail to load at runtime (Godot issue #96126). Committing it means developers
+# can run the game after a fresh clone without needing to run --import first.
+# Regenerate with: godot --headless --path . --import --quit
+.godot/*
+!.godot/uid_cache.bin
 
 # Builds
 build/

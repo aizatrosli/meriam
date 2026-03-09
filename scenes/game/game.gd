@@ -5,16 +5,21 @@ extends Node2D
 
 @export var config: GameConfig
 
-@onready var cannon: Cannon = $Cannon
-@onready var target_spawner: TargetSpawner = $TargetSpawner
-@onready var round_manager: RoundManager = $RoundManager
-@onready var p1: Player1Controller = $Player1Controller
-@onready var p2: Player2Controller = $Player2Controller
+## Use get_node_or_null for instanced PackedScenes (Cannon, HUD, RoundAnnouncementUI,
+## GameOverUI). Without .godot/uid_cache.bin these silently fail to instantiate —
+## see Godot issue #96126. load() by res:// path bypasses the uid cache entirely,
+## so _ready() recovers them programmatically when missing (see below).
+@onready var cannon: Cannon                       = get_node_or_null("Cannon") as Cannon
+@onready var hud: HUD                             = get_node_or_null("HUD") as HUD
+@onready var round_announcement: RoundAnnouncementUI = get_node_or_null("RoundAnnouncementUI") as RoundAnnouncementUI
+
+@onready var target_spawner: TargetSpawner        = $TargetSpawner
+@onready var round_manager: RoundManager          = $RoundManager
+@onready var p1: Player1Controller                = $Player1Controller
+@onready var p2: Player2Controller                = $Player2Controller
 @onready var player_input_router: PlayerInputRouter = $PlayerInputRouter
-@onready var network_manager: NetworkGameManager = $NetworkGameManager
-@onready var hud: HUD = $HUD
-@onready var round_announcement: RoundAnnouncementUI = $RoundAnnouncementUI
-@onready var camera: CameraShake = $CameraShake
+@onready var network_manager: NetworkGameManager  = $NetworkGameManager
+@onready var camera: CameraShake                  = $CameraShake
 
 # ---------------------------------------------------------------------------
 # Lifecycle
@@ -23,19 +28,26 @@ extends Node2D
 func _ready() -> void:
 	assert(config != null, "Game: config must be assigned in Inspector")
 
-	# Instanced scenes (Cannon, HUD, RoundAnnouncementUI) load via PackedScene.
-	# If they fail to load (e.g. missing project import cache), guard here so
-	# the error is explicit and nothing cascades. Run the Godot editor once to
-	# trigger reimport if these are null.
+	# Fallback: if instanced PackedScenes are null (Godot issue #96126 —
+	# uid_cache.bin missing without .godot/), load them by res:// path which
+	# bypasses the uid cache and always works on any machine.
 	if cannon == null:
-		push_error("Game: Cannon node not found. Open the project in the Godot editor to reimport resources.")
-		return
+		cannon = (load("res://scenes/cannon/cannon.tscn") as PackedScene).instantiate() as Cannon
+		cannon.position = Vector2(100, 580)
+		add_child(cannon)
 	if hud == null:
-		push_error("Game: HUD node not found. Open the project in the Godot editor to reimport resources.")
-		return
+		hud = (load("res://scenes/ui/hud.tscn") as PackedScene).instantiate() as HUD
+		hud.score_popup_scene = load("res://scenes/ui/score_popup.tscn") as PackedScene
+		add_child(hud)
 	if round_announcement == null:
-		push_error("Game: RoundAnnouncementUI node not found. Open the project in the Godot editor to reimport resources.")
-		return
+		round_announcement = \
+			(load("res://scenes/ui/round_announcement.tscn") as PackedScene).instantiate() \
+			as RoundAnnouncementUI
+		add_child(round_announcement)
+	if not has_node("GameOverUI"):
+		var gou := (load("res://scenes/ui/game_over_ui.tscn") as PackedScene).instantiate()
+		gou.name = "GameOverUI"
+		add_child(gou)
 
 	# Push config down into cannon sub-components
 	cannon.set_config(config)
