@@ -63,6 +63,9 @@ func update_round(round_number: int) -> void:
 	if pusingan_label:
 		pusingan_label.text = "Pusingan %d / Round %d" % [round_number, round_number]
 
+func refresh_lives(lives: int) -> void:
+	_refresh_lives(lives)
+
 # ---------------------------------------------------------------------------
 # Private
 # ---------------------------------------------------------------------------

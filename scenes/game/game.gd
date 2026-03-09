@@ -68,6 +68,7 @@ func _ready() -> void:
 	network_manager.assign_local_role()
 
 	# Wire target spawner to round manager
+	target_spawner.target_zone_center = $TargetZoneCenter
 	round_manager.config = config
 	round_manager.target_spawner = target_spawner
 
@@ -85,8 +86,10 @@ func _ready() -> void:
 	cannon.firer.fired.connect(func(): camera.shake(6.0, 0.2))
 	GameManager.life_lost.connect(func(_l): camera.shake(10.0, 0.35))
 
-	# Start the game
+	# Start the game (initializes lives to config.starting_lives)
 	GameManager.start_game(config)
+	# Refresh HUD lives — hud._ready() ran before start_game() so it showed 0
+	hud.refresh_lives(GameManager.lives_manager.lives_remaining)
 	round_manager.start_round(0)
 
 func _unhandled_input(event: InputEvent) -> void:

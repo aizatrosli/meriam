@@ -44,6 +44,8 @@ func _ready() -> void:
 func start_game(config: GameConfig) -> void:
 	ScoreManager.reset_score()
 	lives_manager.initialize(config.starting_lives)
+	# Force-reset state so re-plays work (GAME_OVER/VICTORY → MAIN_MENU → ROUND_COUNTDOWN)
+	state_machine.current_state = GameState.State.MAIN_MENU
 	_transition(GameState.State.ROUND_COUNTDOWN)
 
 func on_target_defeated(score_value: int) -> void:
@@ -51,6 +53,8 @@ func on_target_defeated(score_value: int) -> void:
 	target_hit.emit(score_value)
 
 func on_projectile_missed() -> void:
+	if state_machine.current_state != GameState.State.PLAYING:
+		return
 	lives_manager.lose_life()
 	life_lost.emit(lives_manager.lives_remaining)
 	if lives_manager.is_game_over:
@@ -74,6 +78,9 @@ func resume_game() -> void:
 
 func return_to_main_menu() -> void:
 	get_tree().paused = false
+	# Transition state to MAIN_MENU so the state machine is clean for the next game.
+	# Force it directly since GAME_OVER/VICTORY → MAIN_MENU is the only valid path.
+	state_machine.current_state = GameState.State.MAIN_MENU
 	get_tree().change_scene_to_file("res://scenes/main_menu/main_menu.tscn")
 
 # ---------------------------------------------------------------------------
