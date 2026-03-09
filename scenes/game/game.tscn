@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scenes/game/round_manager.gd" id="2_rm"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/score_popup.tscn" id="14_sp"]
 [ext_resource type="PackedScene" path="res://scenes/ui/round_announcement.tscn" id="5_ra"]
 [ext_resource type="PackedScene" path="res://scenes/ui/game_over_ui.tscn" id="6_go"]
+[ext_resource type="PackedScene" path="res://scenes/ui/tutorial_overlay.tscn" id="15_tutorial"]
 [ext_resource type="Script" path="res://scenes/targets/target_spawner.gd" id="7_ts"]
 [ext_resource type="Script" path="res://scenes/players/player1_controller.gd" id="8_p1"]
 [ext_resource type="Script" path="res://scenes/players/player2_controller.gd" id="9_p2"]
@@ -73,3 +74,6 @@ instance = ExtResource("5_ra")
 
 [node name="GameOverUI" parent="."]
 instance = ExtResource("6_go")
+
+[node name="TutorialOverlayUI" parent="."]
+instance = ExtResource("15_tutorial")
