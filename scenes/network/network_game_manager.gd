@@ -19,17 +19,27 @@ extends Node
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-	_assign_local_role()
+	# Role assignment is deferred – game.gd calls assign_local_role() after
+	# wiring player_input_router, since children _ready() runs before game.gd.
 
 # ---------------------------------------------------------------------------
 # Role assignment (host = P1 aimer, client = P2 loader/firer)
+# Called by game.gd after player_input_router has been wired.
 # ---------------------------------------------------------------------------
 
-func _assign_local_role() -> void:
-	if not multiplayer.has_multiplayer_peer():
-		# Local co-op: both roles active
+func assign_local_role() -> void:
+	if player_input_router == null:
+		push_warning("[NetworkGameManager] assign_local_role: player_input_router not set.")
+		return
+	# OfflineMultiplayerPeer is Godot 4's default peer (no real network session).
+	# has_multiplayer_peer() returns true for it, so we must check the peer type.
+	var is_online: bool = multiplayer.has_multiplayer_peer() and \
+		not (multiplayer.multiplayer_peer is OfflineMultiplayerPeer)
+	if not is_online:
+		# Local co-op: both players on the same device – both inputs active
 		player_input_router.only_player1_local = false
 		player_input_router.only_player2_local = false
+		print("[NetworkGameManager] Local co-op mode (both players on same device)")
 		return
 	if multiplayer.is_server():
 		# Host is Anak Sulung (Player 1)

@@ -111,6 +111,7 @@ func _close_all_panels() -> void:
 # ---------------------------------------------------------------------------
 
 func _start_local() -> void:
+	multiplayer.multiplayer_peer = null  # clear any leftover ENet peer from a previous online attempt
 	get_tree().change_scene_to_file("res://scenes/game/game.tscn")
 
 # ---------------------------------------------------------------------------

@@ -23,6 +23,20 @@ extends Node2D
 func _ready() -> void:
 	assert(config != null, "Game: config must be assigned in Inspector")
 
+	# Instanced scenes (Cannon, HUD, RoundAnnouncementUI) load via PackedScene.
+	# If they fail to load (e.g. missing project import cache), guard here so
+	# the error is explicit and nothing cascades. Run the Godot editor once to
+	# trigger reimport if these are null.
+	if cannon == null:
+		push_error("Game: Cannon node not found. Open the project in the Godot editor to reimport resources.")
+		return
+	if hud == null:
+		push_error("Game: HUD node not found. Open the project in the Godot editor to reimport resources.")
+		return
+	if round_announcement == null:
+		push_error("Game: RoundAnnouncementUI node not found. Open the project in the Godot editor to reimport resources.")
+		return
+
 	# Push config down into cannon sub-components
 	cannon.set_config(config)
 
@@ -39,6 +53,7 @@ func _ready() -> void:
 	# Wire network manager
 	network_manager.cannon = cannon
 	network_manager.player_input_router = player_input_router
+	network_manager.assign_local_role()
 
 	# Wire target spawner to round manager
 	round_manager.config = config
