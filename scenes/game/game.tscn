@@ -1,0 +1,79 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scenes/game/game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scenes/game/round_manager.gd" id="2_rm"]
+[ext_resource type="PackedScene" path="res://scenes/cannon/cannon.tscn" id="3_cannon"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud"]
+[ext_resource type="Script" path="res://scenes/game/camera_shake.gd" id="13_cs"]
+[ext_resource type="PackedScene" path="res://scenes/ui/score_popup.tscn" id="14_sp"]
+[ext_resource type="PackedScene" path="res://scenes/ui/round_announcement.tscn" id="5_ra"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_over_ui.tscn" id="6_go"]
+[ext_resource type="PackedScene" path="res://scenes/ui/tutorial_overlay.tscn" id="15_tutorial"]
+[ext_resource type="Script" path="res://scenes/targets/target_spawner.gd" id="7_ts"]
+[ext_resource type="Script" path="res://scenes/players/player1_controller.gd" id="8_p1"]
+[ext_resource type="Script" path="res://scenes/players/player2_controller.gd" id="9_p2"]
+[ext_resource type="Script" path="res://scenes/players/player_input_router.gd" id="10_ir"]
+[ext_resource type="Script" path="res://scenes/network/network_game_manager.gd" id="11_net"]
+[ext_resource type="Resource" path="res://resources/game_config.tres" id="12_cfg"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(1280, 20)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+config = ExtResource("12_cfg")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.12, 1)
+z_index = -10
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 1
+position = Vector2(640, 680)
+
+[node name="GroundShape" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("1")
+
+[node name="Cannon" parent="."]
+instance = ExtResource("3_cannon")
+position = Vector2(100, 580)
+
+[node name="TargetZoneCenter" type="Marker2D" parent="."]
+position = Vector2(700, 520)
+
+[node name="TargetSpawner" type="Node2D" parent="."]
+script = ExtResource("7_ts")
+
+[node name="RoundManager" type="Node" parent="."]
+script = ExtResource("2_rm")
+
+[node name="Player1Controller" type="Node" parent="."]
+script = ExtResource("8_p1")
+
+[node name="Player2Controller" type="Node" parent="."]
+script = ExtResource("9_p2")
+
+[node name="PlayerInputRouter" type="Node" parent="."]
+script = ExtResource("10_ir")
+
+[node name="NetworkGameManager" type="Node" parent="."]
+script = ExtResource("11_net")
+
+[node name="CameraShake" type="Camera2D" parent="."]
+script = ExtResource("13_cs")
+position = Vector2(640, 360)
+
+[node name="HUD" parent="."]
+instance = ExtResource("4_hud")
+score_popup_scene = ExtResource("14_sp")
+
+[node name="RoundAnnouncementUI" parent="."]
+instance = ExtResource("5_ra")
+
+[node name="GameOverUI" parent="."]
+instance = ExtResource("6_go")
+
+[node name="TutorialOverlayUI" parent="."]
+instance = ExtResource("15_tutorial")

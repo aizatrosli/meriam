@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/cannon/cannon.gd" id="1_cannon"]
+[ext_resource type="Script" path="res://scenes/cannon/cannon_aimer.gd" id="2_aimer"]
+[ext_resource type="Script" path="res://scenes/cannon/cannon_loader.gd" id="3_loader"]
+[ext_resource type="Script" path="res://scenes/cannon/cannon_firer.gd" id="4_firer"]
+[ext_resource type="Script" path="res://scenes/cannon/cannon_reload_indicator.gd" id="5_indicator"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(80, 20)
+
+[node name="Cannon" type="Node2D"]
+script = ExtResource("1_cannon")
+
+[node name="CannonBody" type="Sprite2D" parent="."]
+position = Vector2(0, 10)
+
+[node name="BarrelPivot" type="Node2D" parent="."]
+position = Vector2(10, 0)
+
+[node name="BarrelSprite" type="Sprite2D" parent="BarrelPivot"]
+position = Vector2(40, 0)
+
+[node name="MuzzlePoint" type="Marker2D" parent="BarrelPivot"]
+position = Vector2(80, 0)
+
+[node name="MuzzleFlash" type="CPUParticles2D" parent="BarrelPivot/MuzzlePoint"]
+emitting = false
+amount = 12
+lifetime = 0.15
+one_shot = true
+explosiveness = 0.9
+randomness = 0.2
+direction = Vector2(1, 0)
+spread = 30.0
+initial_velocity_min = 80.0
+initial_velocity_max = 150.0
+color = Color(1, 0.7, 0.1, 1)
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+
+[node name="CannonAimer" type="Node2D" parent="."]
+script = ExtResource("2_aimer")
+
+[node name="CannonLoader" type="Node" parent="."]
+script = ExtResource("3_loader")
+
+[node name="CannonFirer" type="Node" parent="."]
+script = ExtResource("4_firer")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="ReloadIndicatorNode" type="Node" parent="."]
+script = ExtResource("5_indicator")
+
+[node name="ReloadUI" type="Control" parent="."]
+position = Vector2(-60, -80)
+custom_minimum_size = Vector2(120, 30)
+
+[node name="FillBar" type="ProgressBar" parent="ReloadUI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="LoadStatusLabel" type="Label" parent="ReloadUI"]
+anchor_right = 1.0
+position = Vector2(0, -24)
+text = "Isi..."
+horizontal_alignment = 1

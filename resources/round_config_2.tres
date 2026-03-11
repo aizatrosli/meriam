@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RoundConfig" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/round_config.gd" id="1_rcscript"]
+[ext_resource type="Script" path="res://resources/target_spawn_entry.gd" id="2_tsescript"]
+[ext_resource type="Resource" path="res://resources/target_spawn_entry_pelita.tres" id="1_pelita"]
+[ext_resource type="Resource" path="res://resources/target_config_kelapa.tres" id="2_kelapa"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2_tsescript")
+config = ExtResource("2_kelapa")
+count = 2
+spacing = 2.0
+height_offset = -10.0
+
+[resource]
+script = ExtResource("1_rcscript")
+round_number = 2
+round_announcement_malay = "Pusingan 2 – Pelita dan Kelapa!"
+time_between_spawns = 1.2
+round_start_delay = 2.5
+targets = [ExtResource("1_pelita"), SubResource("1")]
+completion_bonus_score = 500
+time_limit = 70.0

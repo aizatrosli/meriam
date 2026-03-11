@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TargetSpawnEntry" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/target_spawn_entry.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/target_config_pelita.tres" id="1_pelita"]
+
+[resource]
+script = ExtResource("1_script")
+config = ExtResource("1_pelita")
+count = 3
+spacing = 1.8
+height_offset = 0.0

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="GameConfig" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/game_config.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/cannon/cannon_projectile.tscn" id="1_ball"]
+[ext_resource type="Resource" path="res://resources/round_config_1.tres" id="2_r1"]
+[ext_resource type="Resource" path="res://resources/round_config_2.tres" id="3_r2"]
+[ext_resource type="Resource" path="res://resources/round_config_3.tres" id="4_r3"]
+
+[resource]
+script = ExtResource("1_script")
+starting_lives = 3
+round_count = 3
+cannon_aim_speed = 60.0
+min_aim_angle = 0.0
+max_aim_angle = 75.0
+cannon_load_duration = 2.0
+cannon_cooldown_duration = 1.5
+projectile_speed = 600.0
+projectile_lifetime = 4.0
+projectile_damage = 1
+cannon_ball_scene = ExtResource("1_ball")
+rounds = [ExtResource("2_r1"), ExtResource("3_r2"), ExtResource("4_r3")]

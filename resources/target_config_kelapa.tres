@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TargetConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/target_config.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/targets/target_kelapa.tscn" id="1_kelapa"]
+
+[resource]
+script = ExtResource("1_script")
+target_id = "kelapa"
+display_name_malay = "Kelapa"
+base_health = 2
+score_value = 150
+scene = ExtResource("1_kelapa")
+type = 2
+is_swinging = false
+is_moving = true
+move_speed = 1.0

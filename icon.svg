@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#1a1a2e" rx="12"/>
+  <!-- Bamboo cannon barrel -->
+  <rect x="20" y="54" width="70" height="20" fill="#8B6914" rx="4"/>
+  <rect x="80" y="50" width="12" height="28" fill="#6B4F10" rx="3"/>
+  <!-- Cannonball -->
+  <circle cx="104" cy="38" r="12" fill="#333" stroke="#555" stroke-width="2"/>
+  <!-- Stars (Raya night sky) -->
+  <circle cx="100" cy="20" r="2" fill="#FFD700"/>
+  <circle cx="115" cy="35" r="1.5" fill="#FFD700"/>
+  <circle cx="90" cy="12" r="1.5" fill="#FFD700"/>
+  <!-- Flame / pelita -->
+  <ellipse cx="30" cy="40" rx="5" ry="8" fill="#FF6B00" opacity="0.9"/>
+  <ellipse cx="30" cy="44" rx="3" ry="5" fill="#FFD700"/>
+</svg>
