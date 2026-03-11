@@ -227,6 +227,43 @@ func _spawn_routine() -> void:
 All strings displayed to the player must be in **Malay**. Code comments, identifiers, signal
 names, and git commit messages are in **English**. See [Malay Glossary](../ARCHITECTURE.md#14-malay-terminology-glossary).
 
+### Placeholder visual textures
+
+All game object scripts (cannon, projectile, targets) include private static helpers that generate
+a solid-colour `ImageTexture` at runtime when no art asset is assigned:
+
+```gdscript
+static func _make_rect_texture(w: int, h: int, color: Color) -> ImageTexture:
+    var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+    img.fill(color)
+    return ImageTexture.create_from_image(img)
+
+static func _make_circle_texture(radius: int, color: Color) -> ImageTexture:
+    var d := radius * 2
+    var img := Image.create(d, d, false, Image.FORMAT_RGBA8)
+    img.fill(Color.TRANSPARENT)
+    for y in d:
+        for x in d:
+            var dx := x - radius
+            var dy := y - radius
+            if dx * dx + dy * dy <= radius * radius:
+                img.set_pixel(x, y, color)
+    return ImageTexture.create_from_image(img)
+```
+
+The pattern in `_ready()`:
+
+```gdscript
+var sprite := get_node_or_null("Sprite2D") as Sprite2D
+if sprite:
+    if my_texture == null:
+        my_texture = _make_rect_texture(80, 40, Color(0.55, 0.35, 0.15))
+    sprite.texture = my_texture
+```
+
+Real textures assigned in the Inspector always take priority. When adding a new game object that
+needs a sprite, follow this same pattern — never leave a `Sprite2D` with no texture fallback.
+
 ---
 
 ## 7. Resource File Conventions
@@ -559,3 +596,21 @@ assert_not_null(result, "game_over signal received within 5s")
 
 Run `godot --headless --import --quit` first to build the class database. Then run the scene.
 Skipping the import step causes `class_name` lookups to fail.
+
+### Game objects are invisible
+
+All game objects (cannon, projectile, targets) generate placeholder coloured shapes at runtime
+when no art assets are assigned — the game should be visible without any PNG files. If an object
+is still invisible:
+
+1. Confirm the target scene has a `Sprite2D` child node named `"Sprite2D"` (that is the path
+   `get_node_or_null("Sprite2D")` looks for)
+2. Confirm the script's `_ready()` follows the placeholder pattern above
+3. In the editor, check the node is not hidden (`visible = false`) or zero-scaled
+
+### Tutorial overlay blocks gameplay after scene reload
+
+If the tutorial appears but the game never starts (stuck paused), confirm:
+- `TutorialOverlayUI.process_mode` is `ALWAYS` (value `3` in `.tscn`)
+- `Game._on_tutorial_completed()` is connected via `CONNECT_ONE_SHOT` so it fires exactly once
+- `get_tree().paused = false` is called inside `TutorialOverlayUI._complete()` before emitting `tutorial_completed`

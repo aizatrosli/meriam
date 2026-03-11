@@ -86,7 +86,8 @@ meriam/
 │   └── ui/
 │       ├── hud.gd                                    # Score, lives, round, load bar
 │       ├── game_over_ui.gd                           # Game-over and victory panels
-│       └── round_announcement.gd                     # Full-screen between-round overlay
+│       ├── round_announcement.gd                     # Full-screen between-round overlay
+│       └── tutorial_overlay.tscn / tutorial_overlay.gd  # Step-by-step How to Play (5 steps)
 │
 ├── scripts/
 │   ├── game_state_machine.gd                         # FSM (RefCounted, not a Node)
@@ -132,13 +133,15 @@ The central game event bus and state coordinator.
 **Public API:**
 
 ```
-start_game(config: GameConfig)         # Initialize; reset score; begin ROUND_COUNTDOWN
+start_game(config: GameConfig)         # Reset score; initialize lives; force-reset state
+                                       # to MAIN_MENU then transition → ROUND_COUNTDOWN
 on_target_defeated(score_value: int)   # Called by TargetBase._on_death()
 on_projectile_missed()                 # Called by CannonProjectile._notification(PREDELETE)
+                                       # No-op unless state == PLAYING (guards scene-change races)
 on_round_complete(round_number: int)   # Called by RoundManager
 on_all_rounds_complete()               # Called by RoundManager
 pause_game() / resume_game()
-return_to_main_menu()
+return_to_main_menu()                  # Resets state to MAIN_MENU before changing scene
 ```
 
 ---
@@ -300,7 +303,7 @@ load_status_label.text   = "Sedia!" if loader.is_loaded else "Isi..."
 | `p1_aim_up` | W | Player 1 |
 | `p1_aim_down` | S | Player 1 |
 | `p2_load` | Space | Player 2 |
-| `p2_fire` | Arrow Right | Player 2 |
+| `p2_fire` | Enter | Player 2 |
 | `p2_load_gamepad` | *(unassigned)* | Player 2 gamepad stub |
 
 ### Dispatch Chain
@@ -414,11 +417,16 @@ Sequences rounds from `GameConfig.rounds[]`. Wired by `Game._ready()`.
 
 ```
 Game._ready()
-  └─► round_manager.start_round(0)
-        ├─ count targets in round_cfg
-        ├─ target_spawner.spawn_round(round_cfg)    [async, fire-and-forget]
-        ├─ emit round_started(1)
-        └─ GameManager.state_machine → PLAYING
+  ├─► GameManager.start_game(config)      [initializes lives; state → ROUND_COUNTDOWN]
+  ├─► hud.refresh_lives(lives)            [syncs HUD before tutorial is visible]
+  └─► tutorial_overlay.show_tutorial()   [pauses tree; shows 5 How-to-Play steps]
+        └─ [player clicks Seterusnya → / Langkau]
+             └─ tutorial_completed signal → Game._on_tutorial_completed()
+                  └─► round_manager.start_round(0)
+                        ├─ count targets in round_cfg
+                        ├─ target_spawner.spawn_round(round_cfg)    [async, fire-and-forget]
+                        ├─ emit round_started(1)
+                        └─ GameManager.state_machine → PLAYING
 
   [each target defeated]
   GameManager.on_target_defeated(score)
@@ -437,8 +445,9 @@ Game._ready()
   [projectile expires without hit]
   CannonProjectile._notification(PREDELETE)
     └─ GameManager.on_projectile_missed()
+         ├─ [if state != PLAYING] return  ← guard: no-op during tutorial / scene change
          └─ lives_manager.lose_life()
-              ├─ emit life_lost()
+              ├─ emit life_lost(lives_remaining)
               └─ [if is_game_over] GameManager triggers GAME_OVER
                     └─ emit game_over(final_score)
 ```
@@ -523,6 +532,9 @@ Displays: Markah (score) · Nyawa (lives) · Pusingan (round) · reload progress
 - Listens to `GameManager.target_hit` → `_on_target_hit(score)` → calls `ScoreManager.get_current_score()`
 - Listens to `GameManager.life_lost` → `_on_life_lost(lives)` → updates nyawa label
 - `update_round(round_number: int)` — called by `RoundManager.round_started` signal
+- `refresh_lives(lives: int)` — public method; called by `Game._ready()` after `start_game()` to set
+  the initial lives display (HUD `_ready()` runs before lives are initialized, so it would otherwise
+  show 0 until the first miss)
 
 ### GameOverUI (`scenes/ui/game_over_ui.gd`)
 
@@ -545,6 +557,36 @@ show_round_announcement(round_number: int, malay_text: String = "")
 ```
 
 Called by `Game._on_round_started()` with the `RoundConfig.round_announcement_malay` text.
+
+### TutorialOverlayUI (`scenes/ui/tutorial_overlay.gd`)
+
+Bilingual (Malay/English) step-by-step "How to Play" overlay shown automatically when the game
+scene loads, before the first round starts.
+
+- `layer = 10`, `process_mode = ALWAYS` — renders on top of everything; responds to input even
+  when the scene tree is paused
+- `show_tutorial()` — resets to step 1, fades in background + panel, calls `get_tree().paused = true`
+- **Seterusnya → / Next** button — advances one step; final step shows **Mula! / Start!**
+- **Langkau / Skip** button — skips directly to completion from any step
+- On completion: fades out, unpauses tree, emits `tutorial_completed` signal
+- `Game._on_tutorial_completed()` calls `round_manager.start_round(0)` in response
+
+**5 steps:**
+
+| Step | Title | Content |
+|------|-------|---------|
+| 1 | Selamat Datang! / Welcome! | Introduction — two players cooperate |
+| 2 | Pemain 1 – Anak Sulung | W to aim up, S to aim down |
+| 3 | Pemain 2 – Anak Bongsu (Mengisi) | Hold Space to load |
+| 4 | Pemain 2 – Anak Bongsu (Menembak) | Press Enter to fire when loaded |
+| 5 | Sasaran & Nyawa / Targets & Lives | Point values (100 / 150 / 200) and 3-life system |
+
+**Placeholder visual pattern.** All game object scripts (`cannon.gd`, `cannon_projectile.gd`,
+`target_pelita.gd`, `target_kelapa.gd`, `target_belon.gd`) include private static helpers
+`_make_rect_texture(w, h, color)` and/or `_make_circle_texture(radius, color)` that generate a
+solid-colour `ImageTexture` via `Image.create()` at runtime. These are used as fallbacks in
+`_ready()` when the `@export var ..._texture: Texture2D` is `null`. Assigning a real texture in
+the Inspector always overrides the placeholder.
 
 ### MainMenu (`scenes/main_menu/main_menu.gd`)
 
@@ -589,14 +631,17 @@ Complete table of all inter-system signal connections at runtime.
 | `GameManager` | `target_hit(score)` | `HUD` | `_on_target_hit` |
 | `GameManager` | `target_hit(score)` | `RoundManager` | `_on_target_hit` |
 | `GameManager` | `life_lost(lives)` | `HUD` | `_on_life_lost` |
+| `GameManager` | `life_lost(lives)` | `Game` | lambda → `camera.shake(10.0, 0.35)` |
 | `GameManager` | `game_over(score)` | `GameOverUI` | `show_game_over` |
 | `GameManager` | `victory(score)` | `GameOverUI` | `show_victory` |
 | `GameManager.state_machine` | `state_changed(from, to)` | `GameManager` | `_on_state_changed` |
 | `RoundManager` | `round_started(n)` | `HUD` | `update_round` |
 | `RoundManager` | `round_started(n)` | `Game` | `_on_round_started` |
-| `CannonLoader` | `load_complete()` | *(none)* | polled via `is_loaded` property |
-| `CannonFirer` | `fired()` | *(none)* | available for VFX/SFX extension |
+| `TutorialOverlayUI` | `tutorial_completed` | `Game` | `_on_tutorial_completed` |
+| `CannonFirer` | `fired()` | `Game` | lambda → `camera.shake(6.0, 0.2)` |
+| `CannonFirer` | `fired()` | *(none — extension point)* | muzzle flash via `muzzle_flash.restart()` in cannon.gd |
 | `CannonFirer` | `cooldown_complete()` | *(none)* | available for VFX/SFX extension |
+| `CannonLoader` | `load_complete()` | *(none)* | polled via `is_loaded` property |
 | `LobbyManager` | `join_code_ready(code)` | `MainMenu` | `_on_join_code_ready` |
 | `LobbyManager` | `joined()` | `MainMenu` | `_on_lobby_joined` |
 | `LobbyManager` | `error_occurred(msg)` | `MainMenu` | `_on_lobby_error` |
@@ -630,17 +675,22 @@ other) or layer 4 separately.
 
 ```
 Game (Node2D)
+├── Background (ColorRect)
+├── Ground (StaticBody2D)
 ├── Cannon (cannon.tscn instance)
 │     └── [wired internally by cannon.gd._ready()]
+├── TargetZoneCenter (Marker2D)          ← spawn anchor for targets at Vector2(700, 520)
 ├── TargetSpawner (Node2D)
 ├── RoundManager (Node)
 ├── Player1Controller (Node)
 ├── Player2Controller (Node)
 ├── PlayerInputRouter (Node)
 ├── NetworkGameManager (Node)
+├── CameraShake (Camera2D)
 ├── HUD (CanvasLayer)
 ├── RoundAnnouncementUI (CanvasLayer)
-└── GameOverUI (CanvasLayer)
+├── GameOverUI (CanvasLayer)
+└── TutorialOverlayUI (CanvasLayer)      ← layer=10, process_mode=ALWAYS
 ```
 
 **Wiring sequence in `Game._ready()`:**
@@ -649,14 +699,15 @@ Game (Node2D)
 2. `p1.aimer = cannon.aimer` — connects Player1Controller to CannonAimer
 3. `p2.loader = cannon.loader`, `p2.firer = cannon.firer`
 4. `player_input_router.player1 = p1`, `.player2 = p2`, `.config = config`
-5. `round_manager.config = config`, `.target_spawner = target_spawner`
-6. `round_manager.round_started.connect(hud.update_round)`
-7. `round_manager.round_started.connect(_on_round_started)`
-8. `GameManager.round_manager = round_manager`
-9. `hud.cannon_loader = cannon.loader`
-10. `network_manager` wired (if online)
-11. `GameManager.start_game(config)`
-12. `round_manager.start_round(0)`
+5. `network_manager.cannon = cannon`, `.player_input_router = player_input_router` → `assign_local_role()`
+6. `target_spawner.target_zone_center = $TargetZoneCenter` — wires spawn anchor
+7. `round_manager.config = config`, `.target_spawner = target_spawner`
+8. `hud.cannon_loader = cannon.loader`
+9. `round_manager.round_started.connect(hud.update_round)`
+10. `round_manager.round_started.connect(_on_round_started)`
+11. `GameManager.round_manager = round_manager`; camera shake lambdas connected
+12. `GameManager.start_game(config)` + `hud.refresh_lives(lives)` — initializes lives, syncs HUD
+13. `tutorial_overlay.show_tutorial()` — pauses tree; `tutorial_completed` → `_on_tutorial_completed()` → `round_manager.start_round(0)`
 
 ---
 
@@ -685,6 +736,13 @@ All display strings in UI use Malay. Code identifiers use English.
 
 Round announcement bilingual format: `"Pusingan {n} / Round {n}"` with subtitle
 `"Meriam siap! / Ready the cannon!"` (or the `RoundConfig.round_announcement_malay` override).
+
+| Code Identifier | Malay Display | English Translation |
+|---|---|---|
+| Tutorial button — next | Seterusnya → | Next |
+| Tutorial button — skip | Langkau | Skip |
+| Tutorial button — final step | Mula! | Start! |
+| Main menu how-to-play | Cara Main | How to Play |
 
 ---
 

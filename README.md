@@ -13,7 +13,7 @@ of floating lanterns, coconuts, and balloons.
 | Role | Player | Keys |
 |---|---|---|
 | **Anak Sulung** (Elder – Aimer) | Player 1 | `W` aim up · `S` aim down |
-| **Anak Bongsu** (Younger – Loader/Firer) | Player 2 | Hold `Space` to load · `→` to fire |
+| **Anak Bongsu** (Younger – Loader/Firer) | Player 2 | Hold `Space` to load · `Enter` to fire |
 
 Both players share a single keyboard. The cannon cannot fire unless Player 2 has fully loaded it,
 and the barrel is locked during the post-shot cooldown so Player 1 cannot over-aim.
@@ -33,6 +33,10 @@ git lfs pull
 1. Open **Godot 4.3** → **Import** → select `project.godot`
 2. Press **F5** (or **Run Project**) — entry scene is `res://scenes/main_menu/main_menu.tscn`
 3. Choose **Main Tempatan** (Local co-op) to play on one keyboard
+4. A **How to Play** tutorial appears automatically — click **Seterusnya →** to step through it or **Langkau / Skip** to jump straight into the game
+
+> **No art assets required.** Placeholder coloured shapes are generated at runtime for all
+> game objects. Replace them by assigning textures to the `@export` vars in the Inspector.
 
 ---
 
@@ -82,7 +86,7 @@ meriam/
 │   ├── network/        # Online lobby and network game manager
 │   ├── players/        # Player controllers + input router
 │   ├── targets/        # Target types (Pelita, Kelapa, Belon) + spawner
-│   └── ui/             # HUD, GameOverUI, RoundAnnouncementUI
+│   └── ui/             # HUD, GameOverUI, RoundAnnouncementUI, TutorialOverlayUI
 ├── scripts/            # Pure-logic classes (GameState, LivesManager)
 ├── tests/
 │   ├── unit/           # GUT unit tests (no scene required)
@@ -107,3 +111,7 @@ meriam/
 | Pelita | Oil lamp (target) |
 | Kelapa | Coconut (target) |
 | Belon | Balloon (target) |
+| Cara Main | How to Play |
+| Seterusnya → | Next (tutorial) |
+| Langkau | Skip (tutorial) |
+| Mula! | Start! (begin game from tutorial) |

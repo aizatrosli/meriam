@@ -51,7 +51,8 @@ flowchart TD
 
     LOAD_GAME --> INIT[game.gd _ready\nWire all subsystems]
     INIT --> START_GAME[GameManager.start_game\nReset score · Init lives\nState → ROUND_COUNTDOWN]
-    START_GAME --> ROUND_LOOP
+    START_GAME --> TUTORIAL[TutorialOverlayUI\nshow_tutorial\nPauses tree · 5 steps\nSeterusnya → / Langkau]
+    TUTORIAL -->|tutorial_completed| ROUND_LOOP
 
     subgraph ROUND_LOOP[Round Loop]
         direction TB
@@ -122,7 +123,8 @@ stateDiagram-v2
 ## 3. Scene Initialisation & Wiring
 
 `game.gd._ready()` is the single wiring point for the entire gameplay scene.
-Numbers show the sequence order; all wiring happens before `start_game()`.
+Numbers show the sequence order. Steps 1–12 run synchronously; step 13 fires
+deferred via `tutorial_completed` signal after the player dismisses the tutorial.
 
 ```mermaid
 flowchart LR
@@ -155,6 +157,8 @@ flowchart LR
         HUD[HUD]
         ANNOUNCE[RoundAnnouncementUI]
         GAME_OVER_UI[GameOverUI]
+        TUTORIAL_UI[TutorialOverlayUI]
+        TZ[TargetZoneCenter\nMarker2D]
     end
 
     %% Step 1 — cannon internal wiring (cannon.gd._ready)
@@ -174,24 +178,38 @@ flowchart LR
     ROUTER -->|"② player1"| P1
     ROUTER -->|"② player2"| P2
 
-    %% Step 3 — round management
-    RM -->|"③ target_spawner"| SPAWNER
-    GM -->|"③ round_manager"| RM
+    %% Step 3 — network manager
+    NET -->|"③ cannon"| CANNON
+    NET -->|"③ player_input_router"| ROUTER
 
-    %% Step 4 — HUD gets loader for progress polling
-    HUD -->|"④ cannon_loader"| LOADER
+    %% Step 4 — target spawner zone anchor
+    SPAWNER -->|"④ target_zone_center"| TZ
 
-    %% Step 5 — signals
-    GM -->|"⑤ target_hit"| HUD
-    GM -->|"⑤ target_hit"| RM
-    GM -->|"⑤ life_lost"| HUD
-    GM -->|"⑤ life_lost"| CAM
-    GM -->|"⑤ game_over"| GAME_OVER_UI
-    GM -->|"⑤ victory"| GAME_OVER_UI
-    RM -->|"⑤ round_started"| HUD
-    RM -->|"⑤ round_started"| ANNOUNCE
-    FIRER -->|"⑤ fired"| MUZZLE_FLASH
-    FIRER -->|"⑤ fired"| CAM
+    %% Step 5 — round management
+    RM -->|"⑤ target_spawner"| SPAWNER
+    GM -->|"⑤ round_manager"| RM
+
+    %% Step 6 — HUD gets loader for progress polling
+    HUD -->|"⑥ cannon_loader"| LOADER
+
+    %% Step 7 — signals
+    GM -->|"⑦ target_hit"| HUD
+    GM -->|"⑦ target_hit"| RM
+    GM -->|"⑦ life_lost"| HUD
+    GM -->|"⑦ life_lost"| CAM
+    GM -->|"⑦ game_over"| GAME_OVER_UI
+    GM -->|"⑦ victory"| GAME_OVER_UI
+    RM -->|"⑦ round_started"| HUD
+    RM -->|"⑦ round_started"| ANNOUNCE
+    FIRER -->|"⑦ fired"| MUZZLE_FLASH
+    FIRER -->|"⑦ fired"| CAM
+
+    %% Steps 8-12 — start game & tutorial
+    GM -->|"⑧ start_game → ROUND_COUNTDOWN"| GM
+    HUD -->|"⑨ refresh_lives initial"| HUD
+    TUTORIAL_UI -->|"⑩ show_tutorial\npause tree"| TUTORIAL_UI
+    TUTORIAL_UI -->|"⑪ tutorial_completed\nunpause tree"| RM
+    RM -->|"⑫ start_round 0\nstate → PLAYING"| SPAWNER
 ```
 
 ---
@@ -205,7 +223,7 @@ flowchart TD
     subgraph INPUT_SOURCES[Input Sources]
         KB_P1[Keyboard W / S\nor Gamepad-0 left-stick Y]
         KB_P2_LOAD[Keyboard Space\nor Gamepad-1 South button\nHold to load]
-        KB_P2_FIRE[Keyboard Arrow Right\nor Gamepad-1 East button\nPress to fire]
+        KB_P2_FIRE[Keyboard Enter\nor Gamepad-1 East button\nPress to fire]
     end
 
     subgraph ROUTER[PlayerInputRouter\n_process + _input]
@@ -384,12 +402,15 @@ flowchart TD
 ## 8. Lives & Game-Over Flow
 
 A life is lost whenever a projectile expires without hitting a damageable target.
+`on_projectile_missed()` is guarded so it only counts during active gameplay.
 
 ```mermaid
 flowchart TD
     PREDELETE[CannonProjectile\n_notification PREDELETE\n_hit = false] --> ON_MISSED[GameManager\non_projectile_missed]
 
-    ON_MISSED --> LOSE_LIFE[LivesManager\nlose_life\nlives_remaining -= 1]
+    ON_MISSED --> STATE_CHECK{state ==\nPLAYING?}
+    STATE_CHECK -->|No — tutorial / scene change| IGNORED[return early\nno effect]
+    STATE_CHECK -->|Yes| LOSE_LIFE[LivesManager\nlose_life\nlives_remaining -= 1]
     LOSE_LIFE --> LIFE_SIGNAL[emit life_lost lives_remaining]
 
     LIFE_SIGNAL --> HUD_LIVES[HUD\n_on_life_lost\nUpdate nyawa label\nFlash label red]
